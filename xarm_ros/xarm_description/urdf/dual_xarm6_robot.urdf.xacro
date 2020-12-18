@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm6" >
+  <xacro:arg name="prefix_1" default="L_" />
+  <xacro:arg name="prefix_2" default="R_" />
+  <xacro:arg name="ros_namespace" default="xarm"/>
+  <xacro:arg name="limited" default="false"/>
+  <xacro:arg name="effort_control" default="false"/>
+  <xacro:arg name="add_gripper" default="true"/>
+
+  <xacro:include filename="$(find xarm_description)/urdf/xarm6_robot_macro.xacro" />
+  <xacro:include filename="$(find xarm_gripper)/urdf/xarm_gripper_model.xacro" />
+
+  <!-- ground instead of world, for the arms to attach -->
+  <link name="ground" />
+
+  <!-- launch left arm -->
+  <xacro:xarm6_robot prefix="$(arg prefix_1)" namespace="$(arg ros_namespace)" limited="$(arg limited)" attach_to="ground" xyz="-0.5 0.09916 0" rpy="-1.57 0 -0.349"/>
+  <xacro:if value="$(arg add_gripper)">
+    <xacro:load_gripper prefix="$(arg prefix_1)" attach_to="$(arg prefix_1)link6" />
+  </xacro:if>
+
+  <!-- launch right arm -->
+  <xacro:xarm6_robot prefix="$(arg prefix_2)" namespace="$(arg ros_namespace)" limited="$(arg limited)" attach_to="ground" xyz="-0.5 -0.09916 0" rpy="1.57 0 0.349"/>
+  <xacro:if value="$(arg add_gripper)">
+    <xacro:load_gripper prefix="$(arg prefix_2)" attach_to="$(arg prefix_2)link6" />
+  </xacro:if>
+
+  <!-- add body link -->
+  <link name="body">
+  <inertial>
+    <origin xyz="0.079038 -0.38069 -0.076812" rpy="0 0 0" />
+    <mass
+      value="20.22" />
+    <inertia
+      ixx="1.6025"
+      ixy="0.038852"
+      ixz="0.0033194"
+      iyy="0.71269"
+      iyz="0.014666"
+      izz="1.5939" />
+  </inertial>
+  <visual>
+    <origin
+      xyz="-0.5 -0.09916 0"
+      rpy="1.57 0 0.349" />
+    <geometry>
+      <mesh
+        filename="package://xarm_planner/meshes/body.stl" />
+    </geometry>
+    <material
+      name="">
+      <color
+        rgba="1.0 1.0 1.0 1.0" />
+    </material>
+  </visual>
+  <collision>
+    <origin
+      xyz="-0.5 -0.09916 0"
+      rpy="1.57 0 0.349" />
+    <geometry>
+      <mesh
+        filename="package://xarm_planner/meshes/body.stl" />
+    </geometry>
+  </collision>
+</link>
+
+<joint name="ground_joint" type="fixed">
+    <parent link="ground" />
+    <child link = "body" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+</joint>
+
+</robot>

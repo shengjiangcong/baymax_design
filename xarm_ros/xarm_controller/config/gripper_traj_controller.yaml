@@ -1,0 +1,21 @@
+xarm:
+  gripper_trajectory_controller:
+    type: position_controllers/JointTrajectoryController
+    joints: 
+      - drive_joint
+    constraints:
+      goal_time: 0.5
+      stopped_velocity_tolerance: 0.05
+      drive_joint: {trajectory: 1, goal: 0.01}
+
+
+# No Pid gains specified error fix
+gazebo_ros_control:
+  pid_gains:
+    drive_joint: {p: 30.0, i: 0.1, d: 0.0, i_clamp: 0.2, antiwindup: false, publish_state: true}
+    left_finger_joint: {p: 30.0, i: 0.1, d: 0.0, i_clamp: 0.2, antiwindup: false, publish_state: true}
+    left_inner_knuckle_joint: {p: 30.0, i: 0.1, d: 0.0, i_clamp: 0.2, antiwindup: false, publish_state: true}
+    right_outer_knuckle_joint: {p: 30.0, i: 0.1, d: 0.0, i_clamp: 0.2, antiwindup: false, publish_state: true}
+    right_finger_joint: {p: 30.0, i: 0.1, d: 0.0, i_clamp: 0.2, antiwindup: false, publish_state: true}
+    right_inner_knuckle_joint: {p: 30.0, i: 0.1, d: 0.0, i_clamp: 0.2, antiwindup: false, publish_state: true}
+    
