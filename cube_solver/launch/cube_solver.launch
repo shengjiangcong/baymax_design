@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <rosparam file="$(find cube_solver)/config/cube_string.yaml" command="load"/>
+
+  <node name="cube_solver" pkg="cube_solver" type="cube_solve.py" output="screen"/>
+
+</launch>
