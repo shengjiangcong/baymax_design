@@ -4,4 +4,6 @@
 
   <node name="cube_solver" pkg="cube_solver" type="cube_solve.py" output="screen"/>
 
+  <node name="moveit_cube_solver" pkg="cube_solver" type="moveit_cube_solver" output="screen"/>
+
 </launch>

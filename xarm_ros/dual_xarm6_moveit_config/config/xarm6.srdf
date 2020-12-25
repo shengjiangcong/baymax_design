@@ -46,12 +46,42 @@
         <joint name="L_joint5" value="0" />
         <joint name="L_joint6" value="0" />
     </group_state>
+    <group_state name="safe_state" group="L_xarm6">
+        <joint name="L_joint1" value="0" />
+        <joint name="L_joint2" value="-0.38" />
+        <joint name="L_joint3" value="-0.4" />
+        <joint name="L_joint4" value="0" />
+        <joint name="L_joint5" value="0.79" />
+        <joint name="L_joint6" value="0" />
+    </group_state>
     <group_state name="right_home" group="R_xarm6">
         <joint name="R_joint1" value="0" />
         <joint name="R_joint2" value="0" />
         <joint name="R_joint3" value="0" />
         <joint name="R_joint4" value="0" />
         <joint name="R_joint5" value="0" />
+        <joint name="R_joint6" value="0" />
+    </group_state>
+    <group_state name="safe_state" group="R_xarm6">
+        <joint name="R_joint1" value="0" />
+        <joint name="R_joint2" value="-0.38" />
+        <joint name="R_joint3" value="-0.4" />
+        <joint name="R_joint4" value="0" />
+        <joint name="R_joint5" value="0.79" />
+        <joint name="R_joint6" value="0" />
+    </group_state>
+    <group_state name="safe_state" group="xarm6s">
+        <joint name="L_joint1" value="0" />
+        <joint name="L_joint2" value="-0.38" />
+        <joint name="L_joint3" value="-0.4" />
+        <joint name="L_joint4" value="0" />
+        <joint name="L_joint5" value="0.79" />
+        <joint name="L_joint6" value="0" />
+        <joint name="R_joint1" value="0" />
+        <joint name="R_joint2" value="-0.38" />
+        <joint name="R_joint3" value="-0.4" />
+        <joint name="R_joint4" value="0" />
+        <joint name="R_joint5" value="0.79" />
         <joint name="R_joint6" value="0" />
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->

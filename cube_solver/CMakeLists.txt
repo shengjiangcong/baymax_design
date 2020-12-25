@@ -8,14 +8,16 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
+  image_transport
   moveit_core
-  moveit_ros_perception
+  moveit_ros_planning
   moveit_ros_planning_interface
-  trajectory_msgs
+  moveit_visual_tools
   roscpp
-  rospy
-  geometry_msgs
+  sensor_msgs
   std_msgs
+  tf
   genmsg
   message_generation
   message_runtime
@@ -23,7 +25,12 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(OpenCV REQUIRED)
 
+add_service_files(
+  FILES
+  solve_list.srv
+)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -62,10 +69,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  solve_list.srv
-)
+# add_service_files(
+#   FILES
+#   Service1.srv
+#   Service2.srv
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -77,13 +85,8 @@ add_service_files(
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   probot_msgs
+#   sensor_msgs#   std_msgs
 # )
-
- generate_messages(
-   DEPENDENCIES
-   std_msgs
- )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -105,6 +108,11 @@ add_service_files(
 #   cfg/DynReconf2.cfg
 # )
 
+
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -115,19 +123,11 @@ add_service_files(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include
-#  LIBRARIES probot_anno_demo
-   CATKIN_DEPENDS moveit_core moveit_ros_planning_interface roscpp rospy message_runtime genmsg message_generation std_msgs
+  INCLUDE_DIRS include
+#  LIBRARIES probot_grasping
+  CATKIN_DEPENDS moveit_core moveit_ros_planning_interface roscpp message_runtime genmsg message_generation std_msgs
 #  DEPENDS system_lib
 )
-
-
-add_library(   ##用来手动链接.hpp和.cpp文件
-        test1           ##自定义的链接库名，后面用来识别
-        include/moveit_solve_cube.h    ##.hpp的路径
-        src/moveit_solve_cube.cpp     ##.cpp的路径
-
-        )
 
 ###########
 ## Build ##
@@ -141,8 +141,15 @@ include_directories(
 )
 
 ## Declare a C++ library
+add_library(cube_solve
+     src/moveit_cube_solver.cpp
+)
+
+#target_link_libraries(cube_solve ${OpenCV_LIBS})
+
+## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/probot_anno_demo.cpp
+#   src/${PROJECT_NAME}/probot_grasping.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -153,7 +160,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/probot_anno_demo_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/probot_grasping_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -170,9 +177,11 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(moveit_solve_cube src/moveit_solve_cube.cpp)
-target_link_libraries(moveit_solve_cube ${catkin_LIBRARIES})
-add_dependencies(moveit_solve_cube ${PROJECT_NAME}_gencpp)
+#add_executable(visonManager src/vision_manager.cpp)
+#target_link_libraries(visonManager ${catkin_LIBRARIES} ${OpenCV_LIBS})
+
+add_executable(moveit_cube_solver src/main.cpp)
+target_link_libraries(moveit_cube_solver cube_solve ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -188,18 +197,11 @@ add_dependencies(moveit_solve_cube ${PROJECT_NAME}_gencpp)
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-## Mark executables for installation
-## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-# install(TARGETS ${PROJECT_NAME}_node
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark libraries for installation
-## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
-# install(TARGETS ${PROJECT_NAME}
+## Mark executables and/or libraries for installation
+# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
 ## Mark cpp header files for installation
@@ -216,12 +218,19 @@ add_dependencies(moveit_solve_cube ${PROJECT_NAME}_gencpp)
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
+install(TARGETS
+   moveit_cube_solver
+   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 #############
 ## Testing ##
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_probot_anno_demo.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_probot_grasping.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
