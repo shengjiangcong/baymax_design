@@ -42,6 +42,13 @@ CubeSolver::CubeSolver(ros::NodeHandle n_) :
 
     L_xarm.setMaxAccelerationScalingFactor(0.5);
     L_xarm.setMaxVelocityScalingFactor(0.5);
+
+    solve_map = {{"U", 0}, {"U'", 1}, {"U2", 2}, 
+                 {"L", 3}, {"L'", 4}, {"L2", 5}, 
+                 {"D", 6}, {"D'", 7}, {"D2", 8},
+                 {"F", 9}, {"F'", 10}, {"F2", 11},
+                 {"R", 12}, {"R'", 13}, {"R2", 14},
+                 {"B", 15}, {"B'", 16}, {"B2", 17}};
 }
 
 void CubeSolver::add_scene()
@@ -55,16 +62,16 @@ void CubeSolver::add_scene()
     shape_msgs::SolidPrimitive cube_primitive;
     cube_primitive.type = cube_primitive.BOX;
     cube_primitive.dimensions.resize(3);
-    cube_primitive.dimensions[0] = 0.055;
+    cube_primitive.dimensions[0] = 0.055;//魔方长宽高
     cube_primitive.dimensions[1] = 0.055;
     cube_primitive.dimensions[2] = 0.055;
 
     // 设置障碍物的位置
     geometry_msgs::Pose cube_pose;
     cube_pose.orientation.w = 1.0;
-    cube_pose.position.x = 0;
+    cube_pose.position.x = 0;//魔方位置xyz
     cube_pose.position.y = 0;
-    cube_pose.position.z = 0;
+    cube_pose.position.z = -0.25;
 
     // 将障碍物的属性、位置加入到障碍物的实例中
     cube.primitives.push_back(cube_primitive);
@@ -89,7 +96,7 @@ void CubeSolver::add_scene()
     bottom_wall_pose.orientation.w = 1.0;
     bottom_wall_pose.position.x = 0;
     bottom_wall_pose.position.y = 0;
-    bottom_wall_pose.position.z = -0.4;
+    bottom_wall_pose.position.z = -0.3;//地面的高度
 
     // 将障碍物的属性、位置加入到障碍物的实例中
     bottom_wall.primitives.push_back(bottom_wall_primitive);
@@ -206,5 +213,171 @@ bool CubeSolver::R_xarm_move_to(geometry_msgs::Pose pos)
          return false;
       else
          return true;
+}
+
+bool CubeSolver::start_pick()
+{
+    ROS_INFO("准备抓起魔方。");
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0.0;
+    target_pose_r.position.y = 0.0;
+    target_pose_r.position.z = 0.05;
+    target_pose_r.orientation.x = 1.0;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+
+    target_pose_r.position.z = -0.05;
+   
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+
+    Gripper_mode mode = R_closed;
+    gripper_control(mode);
+
+    target_pose_r.position.x = 0.0;
+    target_pose_r.position.y = -0.15;
+    target_pose_r.position.z = 0;
+    target_pose_r.orientation.x = -0.5;
+    target_pose_r.orientation.y = -0.5;
+    target_pose_r.orientation.z = -0.5;
+    target_pose_r.orientation.w = 0.5;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+
+
+return true;
+
+}
+
+void CubeSolver::gripper_control(Gripper_mode mode)
+{
+if (mode == L_closed)
+{
+    ROS_INFO("左手夹爪闭合");
+}
+else if (mode == L_open)
+{
+    ROS_INFO("左手夹爪张开");
+}
+else if (mode == R_closed)
+{
+    ROS_INFO("右手夹爪闭合");
+}
+else if (mode == R_open)
+{
+    ROS_INFO("右手夹爪张开");
+}
+else 
+{
+    ROS_ERROR("夹爪模式错误");
+}
+}
+
+bool CubeSolver::turn_U0()
+{
+    ROS_INFO("顺时针旋转上面90度。");
+return true;
+}
+
+bool CubeSolver::turn_U1()
+{
+    ROS_INFO("逆时针旋转上面90度。");
+return true;
+}
+
+bool CubeSolver::turn_U2()
+{
+    ROS_INFO("旋转上面180度。");
+return true;
+}
+
+bool CubeSolver::turn_L0()
+{
+    ROS_INFO("顺时针旋转左面90度。");
+return true;
+}
+
+bool CubeSolver::turn_L1()
+{
+    ROS_INFO("逆时针旋转左面90度。");
+return true;
+}
+
+bool CubeSolver::turn_L2()
+{
+    ROS_INFO("旋转左面180度。");
+return true;
+}
+
+bool CubeSolver::turn_D0()
+{
+    ROS_INFO("顺时针旋转下面90度。");
+return true;
+}
+
+bool CubeSolver::turn_D1()
+{
+    ROS_INFO("逆时针旋转下面90度。");
+return true;
+}
+
+bool CubeSolver::turn_D2()
+{
+    ROS_INFO("旋转下面180度。");
+return true;
+}
+
+bool CubeSolver::turn_F0()
+{
+    ROS_INFO("顺时针旋转前面90度。");
+return true;
+}
+
+bool CubeSolver::turn_F1()
+{
+    ROS_INFO("逆时针旋转前面90度。");
+return true;
+}
+
+bool CubeSolver::turn_F2()
+{
+    ROS_INFO("旋转前面180度。");
+return true;
+}
+
+bool CubeSolver::turn_R0()
+{
+    ROS_INFO("顺时针旋转右面90度。");
+return true;
+}
+
+bool CubeSolver::turn_R1()
+{
+    ROS_INFO("逆时针旋转右面90度。");
+return true;
+}
+
+bool CubeSolver::turn_R2()
+{
+    ROS_INFO("旋转右面180度。");
+return true;
+}bool CubeSolver::turn_B0()
+{
+    ROS_INFO("顺时针旋转后面90度。");
+return true;
+}
+
+bool CubeSolver::turn_B1()
+{
+    ROS_INFO("逆时针旋转后面90度。");
+return true;
+}
+
+bool CubeSolver::turn_B2()
+{
+    ROS_INFO("旋转后面180度。");
+return true;
 }
 

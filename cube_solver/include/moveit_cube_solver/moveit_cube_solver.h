@@ -18,6 +18,7 @@ limitations under the License.
 #define PROBOT_CUBE_SOLVER
 
 #include <ros/ros.h>
+#include <locale>
 #include <image_transport/image_transport.h>
 #include <sensor_msgs/image_encodings.h>
 #include <geometry_msgs/PoseStamped.h>
@@ -30,6 +31,15 @@ limitations under the License.
 #include "cube_solver/solve_list.h"
 #include <sstream>
 #include <deque>
+#include <unordered_map>
+
+
+//
+//right:横向;-0.707,0,0,0.707
+//      向下：1,0,0,0
+//      向前：0.707，0，0.707，0
+//      向上：0，0，0，1
+//
 
 class CubeSolver
 {
@@ -42,7 +52,16 @@ class CubeSolver
         ros::Publisher planning_scene_diff_publisher;
         moveit_msgs::PlanningScene planning_scene;
         std::deque<std::string> cube_deque;//存储解的序列
+        enum Gripper_mode
+        {
+          L_closed,
+          L_open,
+          R_closed,
+          R_open
+        };
+
   public:
+        std::unordered_map<std::string, int> solve_map;
 	CubeSolver(ros::NodeHandle n_);
         void add_scene();
         void remove_scene();
@@ -52,6 +71,32 @@ class CubeSolver
         bool L_xarm_move_to(geometry_msgs::Pose pos);
         bool R_xarm_move_to(geometry_msgs::Pose pos);
         std::deque<std::string> get_cube_deque() {return cube_deque;}
+        bool start_pick();
+        void gripper_control(Gripper_mode mode);
+        bool turn_U0();//顺时针90
+        bool turn_U1();//逆时针90
+        bool turn_U2();//180
+
+        bool turn_L0();//顺时针90
+        bool turn_L1();//逆时针90
+        bool turn_L2();//180
+
+        bool turn_D0();//顺时针90
+        bool turn_D1();//逆时针90
+        bool turn_D2();//180
+
+        bool turn_F0();//顺时针90
+        bool turn_F1();//逆时针90
+        bool turn_F2();//180
+
+        bool turn_R0();//顺时针90
+        bool turn_R1();//逆时针90
+        bool turn_R2();//180
+
+        bool turn_B0();//顺时针90
+        bool turn_B1();//逆时针90
+        bool turn_B2();//180
+        
 	
 };
 
