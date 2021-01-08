@@ -1,6 +1,6 @@
 <launch>
-  <arg name="robot_ip_1" /> 
-  <arg name="robot_ip_2" />
+  <arg name="robot_ip_1" default="192.168.1.218"/> 
+  <arg name="robot_ip_2" default="192.168.1.207"/>
   <arg name="hw_ns_1" default="L_xarm6" />
   <arg name="hw_ns_2" default="R_xarm6" />
   <!-- load the default move_group planner (not xarm_simple_planner) -->
