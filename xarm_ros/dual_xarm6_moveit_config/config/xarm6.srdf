@@ -31,6 +31,7 @@
         <group name="L_xarm6" />
         <group name="R_xarm6" />
     </group>
+
     <group name="L_gripper">
         <joint name="L_drive_joint" />
     </group>
