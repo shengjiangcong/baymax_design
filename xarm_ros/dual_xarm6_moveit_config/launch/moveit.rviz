@@ -8,8 +8,6 @@ Panels:
         - /MotionPlanning1/Scene Geometry1
         - /MotionPlanning1/Planning Request1
         - /MotionPlanning1/Planned Path1
-        - /MotionPlanning1/Planned Path1/Links1
-        - /MotionPlanning1/Planned Path1/Links1/L_link61
       Splitter Ratio: 0.6251830458641052
     Tree Height: 379
   - Class: rviz/Help
@@ -250,7 +248,7 @@ Visualization Manager:
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
         Planning Group: L_xarm6
-        Query Goal State: true
+        Query Goal State: false
         Query Start State: false
         Show Workspace: false
         Start State Alpha: 1
@@ -426,6 +424,171 @@ Visualization Manager:
         Show Robot Visual: true
       Value: true
       Velocity_Scaling_Factor: 1
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        L_left_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_left_inner_knuckle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_left_outer_knuckle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_link1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_link2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_link3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_link4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_link5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_link_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_right_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_right_inner_knuckle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_right_outer_knuckle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        L_xarm_gripper_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link Tree Style: Links in Alphabetic Order
+        R_left_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_left_inner_knuckle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_left_outer_knuckle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_link1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_link2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_link3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_link4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_link5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_link_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_right_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_right_inner_knuckle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_right_outer_knuckle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_xarm_gripper_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        body:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ground:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -457,10 +620,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.2847965955734253
+      Pitch: 0.8797969818115234
       Target Frame: ground
       Value: XYOrbit (rviz)
-      Yaw: 0.08676430583000183
+      Yaw: 6.13494873046875
     Saved: ~
 Window Geometry:
   Displays:

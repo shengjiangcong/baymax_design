@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 
     CubeSolver Solver(n);//创建对象
 
-    Solver.add_scene();//添加环境
+    //Solver.add_scene();//添加环境
 
     Solver.move_to_safe_state();//移动到安全位置
 
@@ -29,10 +29,28 @@ int main(int argc, char **argv)
        ros::shutdown(); 
     }
     std::deque<std::string> cube_deque = Solver.get_cube_deque();
+    //std::deque<std::string> cube_deque;
+   /* cube_deque.push_back("U");
+    cube_deque.push_back("U'");
+    cube_deque.push_back("U2");
+    cube_deque.push_back("L");
+    cube_deque.push_back("L'");
+    cube_deque.push_back("L2");*/
+    //cube_deque.push_back("D");
+    //cube_deque.push_back("D'");
+    //cube_deque.push_back("D2");
+    /*cube_deque.push_back("R");
+    cube_deque.push_back("R'");
+    cube_deque.push_back("R2");
+cube_deque.push_back("U");*/
     while (!cube_deque.empty())
     {
         std::string a = cube_deque.front();
         //std::cout << a << std::endl;
+        /*if (Solver.pick_num == 1)
+              ROS_ERROR("右手固定");
+        else
+              ROS_ERROR("左手固定");*/
         
         switch(Solver.solve_map[a])
         {
@@ -148,6 +166,11 @@ int main(int argc, char **argv)
         }
         cube_deque.pop_front();
     }
+
+    if (Solver.pick_num == 1)
+        Solver.L_move_to_safe_state();
+    else if (Solver.pick_num == 2)
+        Solver.R_move_to_safe_state();
     
 
    /* geometry_msgs::Pose target_pose_l;

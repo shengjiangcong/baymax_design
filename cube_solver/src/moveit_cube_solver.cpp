@@ -19,7 +19,8 @@ limitations under the License.
 CubeSolver::CubeSolver(ros::NodeHandle n_) :
     L_xarm("L_xarm6"), 
     R_xarm("R_xarm6"), 
-    xarms("xarm6s")
+    xarms("xarm6s"),
+    pick_num(-1)
 {
     this->nh_ = n_;
 
@@ -71,7 +72,7 @@ void CubeSolver::add_scene()
     cube_pose.orientation.w = 1.0;
     cube_pose.position.x = 0;//魔方位置xyz
     cube_pose.position.y = 0;
-    cube_pose.position.z = -0.25;
+    cube_pose.position.z = 0;//-0.25
 
     // 将障碍物的属性、位置加入到障碍物的实例中
     cube.primitives.push_back(cube_primitive);
@@ -96,7 +97,7 @@ void CubeSolver::add_scene()
     bottom_wall_pose.orientation.w = 1.0;
     bottom_wall_pose.position.x = 0;
     bottom_wall_pose.position.y = 0;
-    bottom_wall_pose.position.z = -0.3;//地面的高度
+    bottom_wall_pose.position.z = -0.5;//地面的高度
 
     // 将障碍物的属性、位置加入到障碍物的实例中
     bottom_wall.primitives.push_back(bottom_wall_primitive);
@@ -142,6 +143,20 @@ void CubeSolver::move_to_safe_state()
 {
     xarms.setNamedTarget("safe_state");
     xarms.move();
+    sleep(1);
+}
+
+void CubeSolver::L_move_to_safe_state()
+{
+    L_xarm.setNamedTarget("safe_state");
+    L_xarm.move();
+    sleep(1);
+}
+
+void CubeSolver::R_move_to_safe_state()
+{
+    R_xarm.setNamedTarget("safe_state");
+    R_xarm.move();
     sleep(1);
 }
 
@@ -215,6 +230,22 @@ bool CubeSolver::R_xarm_move_to(geometry_msgs::Pose pos)
          return true;
 }
 
+bool CubeSolver::L_xarm_move_to(int index, double kind)
+{
+    std::vector<double> joint_group_positions = L_xarm.getCurrentJointValues();
+    joint_group_positions[index] += kind * PI / 2.0;
+    L_xarm.setJointValueTarget(joint_group_positions);
+    L_xarm.move();
+}
+
+bool CubeSolver::R_xarm_move_to(int index, double kind)
+{
+    std::vector<double> joint_group_positions = R_xarm.getCurrentJointValues();
+    joint_group_positions[index] += kind * PI / 2.0;
+    R_xarm.setJointValueTarget(joint_group_positions);
+    R_xarm.move();
+}
+
 bool CubeSolver::start_pick()
 {
     ROS_INFO("准备抓起魔方。");
@@ -245,7 +276,8 @@ bool CubeSolver::start_pick()
     target_pose_r.orientation.w = 0.5;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-
+    pick_num = 1;//右手用于固定魔方，左手旋转
+    add_scene();
 
 return true;
 
@@ -273,111 +305,681 @@ else
 {
     ROS_ERROR("夹爪模式错误");
 }
+//sleep(3);
+
 }
 
-bool CubeSolver::turn_U0()
+
+
+bool CubeSolver::turn_U0()//-1.325110706084886
 {
-    ROS_INFO("顺时针旋转上面90度。");
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 1)
+{
+ROS_INFO("顺时针旋转上面90度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0;
+    target_pose_l.position.z = 0.20;
+    target_pose_l.orientation.x = 1;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,1);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_U1()
 {
-    ROS_INFO("逆时针旋转上面90度。");
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 1)
+{
+ROS_INFO("逆时针旋转上面90度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0;
+    target_pose_l.position.z = 0.20;
+    target_pose_l.orientation.x = 1;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,-1);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_U2()
 {
-    ROS_INFO("旋转上面180度。");
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+if (pick_num == 1)
+{
+ROS_INFO("旋转上面180度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0;
+    target_pose_l.position.z = 0.20;
+    target_pose_l.orientation.x = 1;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,2);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
 return true;
 }
+else
+return false;
+}
 
-bool CubeSolver::turn_L0()
+bool CubeSolver::turn_L0()//-1.5653094231344482
+{
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 1)
 {
     ROS_INFO("顺时针旋转左面90度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0.2;
+    target_pose_l.position.z = 0;
+    target_pose_l.orientation.x = -0.5;
+    target_pose_l.orientation.y = -0.5;
+    target_pose_l.orientation.z = 0.5;
+    target_pose_l.orientation.w = -0.5;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,1);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_L1()
 {
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 1)
+{
     ROS_INFO("逆时针旋转左面90度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0.2;
+    target_pose_l.position.z = 0;
+    target_pose_l.orientation.x = -0.5;
+    target_pose_l.orientation.y = -0.5;
+    target_pose_l.orientation.z = 0.5;
+    target_pose_l.orientation.w = -0.5;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,-1);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_L2()
 {
-    ROS_INFO("旋转左面180度。");
-return true;
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
 }
 
-bool CubeSolver::turn_D0()
+if (pick_num == 1)
+{
+    ROS_INFO("旋转左面180度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0.2;
+    target_pose_l.position.z = 0;
+    target_pose_l.orientation.x = -0.5;
+    target_pose_l.orientation.y = -0.5;
+    target_pose_l.orientation.z = 0.5;
+    target_pose_l.orientation.w = -0.5;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,2);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+return true;
+}
+else
+return false;
+}
+
+bool CubeSolver::turn_D0()//-0.2840679308264519
+{
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 1)
 {
     ROS_INFO("顺时针旋转下面90度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0;
+    target_pose_l.position.z = -0.2;
+    target_pose_l.orientation.x = 0;
+    target_pose_l.orientation.y = 0;
+    target_pose_l.orientation.z = -0.7071068;
+    target_pose_l.orientation.w = 0.7071068;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,1);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_D1()
 {
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 1)
+{
     ROS_INFO("逆时针旋转下面90度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0;
+    target_pose_l.position.z = -0.2;
+    target_pose_l.orientation.x = 0;
+    target_pose_l.orientation.y = 0;
+    target_pose_l.orientation.z = -0.7071068;
+    target_pose_l.orientation.w = 0.7071068;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,-1);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_D2()
 {
-    ROS_INFO("旋转下面180度。");
-return true;
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
 }
 
-bool CubeSolver::turn_F0()
+if (pick_num == 1)
+{
+    ROS_INFO("旋转下面180度。");
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0;
+    target_pose_l.position.z = -0.2;
+    target_pose_l.orientation.x = 0;
+    target_pose_l.orientation.y = 0;
+    target_pose_l.orientation.z = -0.7071068;
+    target_pose_l.orientation.w = 0.7071068;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+L_xarm_move_to(5,2);
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+return true;
+}
+else
+return false;
+}
+
+bool CubeSolver::turn_F0()//-1.3174343380298432
+{
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+if (pick_num == 2)
 {
     ROS_INFO("顺时针旋转前面90度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = 0;
+    target_pose_r.position.z = -0.2;
+    target_pose_r.orientation.x = 0;
+    target_pose_r.orientation.y = 0;
+    target_pose_r.orientation.z = 0;
+    target_pose_r.orientation.w = 1;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5,1);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_F1()
 {
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 2)
+{
     ROS_INFO("逆时针旋转前面90度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = 0;
+    target_pose_r.position.z = -0.2;
+    target_pose_r.orientation.x = 0;
+    target_pose_r.orientation.y = 0;
+    target_pose_r.orientation.z = 0;
+    target_pose_r.orientation.w = 1;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5,-1);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_F2()
 {
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+if (pick_num == 2)
+{
     ROS_INFO("旋转前面180度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = 0;
+    target_pose_r.position.z = -0.2;
+    target_pose_r.orientation.x = 0;
+    target_pose_r.orientation.y = 0;
+    target_pose_r.orientation.z = 0;
+    target_pose_r.orientation.w = 1;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5,2);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_R0()
 {
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 2)
+{
     ROS_INFO("顺时针旋转右面90度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = -0.2;
+    target_pose_r.position.z = 0;
+    target_pose_r.orientation.x = -0.5;
+    target_pose_r.orientation.y = -0.5;
+    target_pose_r.orientation.z = -0.5;
+    target_pose_r.orientation.w = 0.5;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5,1);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_R1()
 {
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 2)
+{
     ROS_INFO("逆时针旋转右面90度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = -0.2;
+    target_pose_r.position.z = 0;
+    target_pose_r.orientation.x = -0.5;
+    target_pose_r.orientation.y = -0.5;
+    target_pose_r.orientation.z = -0.5;
+    target_pose_r.orientation.w = 0.5;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5, -1);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_R2()
 {
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 2)
+{
     ROS_INFO("旋转右面180度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = -0.2;
+    target_pose_r.position.z = 0;
+    target_pose_r.orientation.x = -0.5;
+    target_pose_r.orientation.y = -0.5;
+    target_pose_r.orientation.z = -0.5;
+    target_pose_r.orientation.w = 0.5;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5, 2);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
 return true;
-}bool CubeSolver::turn_B0()
+}
+else
+return false;
+}
+
+bool CubeSolver::turn_B0()
+{
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+
+if (pick_num == 2)
 {
     ROS_INFO("顺时针旋转后面90度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = 0;
+    target_pose_r.position.z = 0.2;
+    target_pose_r.orientation.x = 0.7071068;
+    target_pose_r.orientation.y = 0.7071068;
+    target_pose_r.orientation.z = 0;
+    target_pose_r.orientation.w = 0;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5,1);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_B1()
 {
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+
+if (pick_num == 2)
+{
     ROS_INFO("逆时针旋转后面90度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = 0;
+    target_pose_r.position.z = 0.2;
+    target_pose_r.orientation.x = 0.7071068;
+    target_pose_r.orientation.y = 0.7071068;
+    target_pose_r.orientation.z = 0;
+    target_pose_r.orientation.w = 0;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5, -1);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
 return true;
+}
+else
+return false;
 }
 
 bool CubeSolver::turn_B2()
 {
+if (pick_num != 2)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+if (pick_num == 2)
+{
     ROS_INFO("旋转后面180度。");
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0;
+    target_pose_r.position.y = 0;
+    target_pose_r.position.z = 0.2;
+    target_pose_r.orientation.x = 0.7071068;
+    target_pose_r.orientation.y = 0.7071068;
+    target_pose_r.orientation.z = 0;
+    target_pose_r.orientation.w = 0;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+R_xarm_move_to(5, 2);
+gripper_control((Gripper_mode)(R_open));//张开左夹爪
+return true;
+}
+else
+return false;
+}
+
+bool CubeSolver::switch_fix_arm()
+{
+if (pick_num == 1)
+{
+gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0.15;
+    target_pose_l.position.z = 0;
+    target_pose_l.orientation.x = 0.7071068;
+    target_pose_l.orientation.y = 0;
+    target_pose_l.orientation.z = 0;
+    target_pose_l.orientation.w = 0.7071068;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    gripper_control((Gripper_mode)(R_open));//张开右夹爪
+    R_move_to_safe_state();
+    L_xarm_move_to(5,1);
+    pick_num = 2;
+    return true;
+}
+else if (pick_num == 2)
+{    
+    R_move_to_safe_state();
+    L_xarm_move_to(5, -1);
+gripper_control((Gripper_mode)(R_open));//张开右夹爪
+
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0.0;
+    target_pose_r.position.y = -0.15;
+    target_pose_r.position.z = 0;
+    target_pose_r.orientation.x = -0.5;
+    target_pose_r.orientation.y = -0.5;
+    target_pose_r.orientation.z = -0.5;
+    target_pose_r.orientation.w = 0.5;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+    gripper_control((Gripper_mode)(L_open));//张开右夹爪
+    pick_num = 1;
+    return true;
+}
+else 
+{
+   ROS_ERROR("pick_num参数错误！");
+   return false;
+}
+
 return true;
 }
 

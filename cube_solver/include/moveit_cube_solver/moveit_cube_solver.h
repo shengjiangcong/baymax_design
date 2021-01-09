@@ -59,6 +59,7 @@ class CubeSolver
           R_closed,
           R_open
         };
+        const double PI = 3.141592653;
 
   public:
         std::unordered_map<std::string, int> solve_map;
@@ -67,10 +68,15 @@ class CubeSolver
         void remove_scene();
         bool call_kociemba();
         void move_to_safe_state();
+        void L_move_to_safe_state();
+        void R_move_to_safe_state();
         bool xarms_move_to(geometry_msgs::Pose pos1, geometry_msgs::Pose pos2);
         bool L_xarm_move_to(geometry_msgs::Pose pos);
+        bool L_xarm_move_to(int index, double kind);
         bool R_xarm_move_to(geometry_msgs::Pose pos);
+        bool R_xarm_move_to(int index, double kind);
         std::deque<std::string> get_cube_deque() {return cube_deque;}
+        int pick_num;//1表示右手固定魔方，2表示左手
         bool start_pick();
         void gripper_control(Gripper_mode mode);
         bool turn_U0();//顺时针90
@@ -96,6 +102,8 @@ class CubeSolver
         bool turn_B0();//顺时针90
         bool turn_B1();//逆时针90
         bool turn_B2();//180
+
+        bool switch_fix_arm();//切换固定魔方的手臂
         
 	
 };
