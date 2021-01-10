@@ -160,6 +160,19 @@ void CubeSolver::R_move_to_safe_state()
     sleep(1);
 }
 
+void CubeSolver::R_move_to_ready_state()
+{
+    geometry_msgs::Pose target_pose_r;
+    target_pose_r.position.x = 0.0;
+    target_pose_r.position.y = -0.2;
+    target_pose_r.position.z = 0;
+    target_pose_r.orientation.x = -0.5;
+    target_pose_r.orientation.y = -0.5;
+    target_pose_r.orientation.z = -0.5;
+    target_pose_r.orientation.w = 0.5;
+    R_xarm_move_to(target_pose_r);
+}
+
 void CubeSolver::remove_scene()
 {
     // 声明障碍物体
@@ -929,6 +942,8 @@ else
 return false;
 }
 
+
+
 bool CubeSolver::switch_fix_arm()
 {
 if (pick_num == 1)
@@ -948,16 +963,16 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
        return false;
     gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
     gripper_control((Gripper_mode)(R_open));//张开右夹爪
-    R_move_to_safe_state();
+    R_move_to_ready_state();
     L_xarm_move_to(5,1);
     pick_num = 2;
     return true;
 }
 else if (pick_num == 2)
 {    
-    R_move_to_safe_state();
+    gripper_control((Gripper_mode)(R_open));//张开右夹爪
+    R_move_to_ready_state();
     L_xarm_move_to(5, -1);
-gripper_control((Gripper_mode)(R_open));//张开右夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0.0;

@@ -70,6 +70,7 @@ class CubeSolver
         void move_to_safe_state();
         void L_move_to_safe_state();
         void R_move_to_safe_state();
+        void R_move_to_ready_state();
         bool xarms_move_to(geometry_msgs::Pose pos1, geometry_msgs::Pose pos2);
         bool L_xarm_move_to(geometry_msgs::Pose pos);
         bool L_xarm_move_to(int index, double kind);
