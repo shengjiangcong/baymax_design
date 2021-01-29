@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: xarm_description
+    relative_path: urdf/dual_xarm6_robot.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/xarm6.srdf
+  CONFIG:
+    author_name: sjc
+    author_email: sjc@qq.com
+    generated_timestamp: 1611893000
