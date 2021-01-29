@@ -32,6 +32,7 @@ limitations under the License.
 #include <sstream>
 #include <deque>
 #include <unordered_map>
+#include <xarm_msgs/GripperMove.h>
 
 
 //
@@ -52,6 +53,7 @@ class CubeSolver
         ros::Publisher planning_scene_diff_publisher;
         moveit_msgs::PlanningScene planning_scene;
         std::deque<std::string> cube_deque;//存储解的序列
+        const double PI = 3.141592653;
         enum Gripper_mode
         {
           L_closed,
@@ -59,8 +61,9 @@ class CubeSolver
           R_closed,
           R_open
         };
-        const double PI = 3.141592653;
-
+    moveit_msgs::CollisionObject cube;
+    shape_msgs::SolidPrimitive cube_primitive;
+    geometry_msgs::Pose cube_pose;
   public:
         std::unordered_map<std::string, int> solve_map;
 	CubeSolver(ros::NodeHandle n_);
@@ -80,6 +83,7 @@ class CubeSolver
         int pick_num;//1表示右手固定魔方，2表示左手
         bool start_pick();
         void gripper_control(Gripper_mode mode);
+        void gripper_control_test();
         bool turn_U0();//顺时针90
         bool turn_U1();//逆时针90
         bool turn_U2();//180
@@ -105,6 +109,7 @@ class CubeSolver
         bool turn_B2();//180
 
         bool switch_fix_arm();//切换固定魔方的手臂
+
         
 	
 };

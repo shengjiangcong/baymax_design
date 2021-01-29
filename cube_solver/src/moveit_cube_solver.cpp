@@ -55,12 +55,12 @@ CubeSolver::CubeSolver(ros::NodeHandle n_) :
 void CubeSolver::add_scene()
 {
      // 声明一个障碍物体
-    moveit_msgs::CollisionObject cube;
+    //moveit_msgs::CollisionObject cube;
     cube.id = "cube";
     cube.header.frame_id = "ground";
 
     // 设置障碍物的外形、尺寸等属性   
-    shape_msgs::SolidPrimitive cube_primitive;
+   // shape_msgs::SolidPrimitive cube_primitive;
     cube_primitive.type = cube_primitive.BOX;
     cube_primitive.dimensions.resize(3);
     cube_primitive.dimensions[0] = 0.055;//魔方长宽高
@@ -68,10 +68,10 @@ void CubeSolver::add_scene()
     cube_primitive.dimensions[2] = 0.055;
 
     // 设置障碍物的位置
-    geometry_msgs::Pose cube_pose;
+   // geometry_msgs::Pose cube_pose;
     cube_pose.orientation.w = 1.0;
     cube_pose.position.x = 0;//魔方位置xyz
-    cube_pose.position.y = 0;
+    cube_pose.position.y = 0.05;
     cube_pose.position.z = 0;//-0.25
 
     // 将障碍物的属性、位置加入到障碍物的实例中
@@ -97,18 +97,213 @@ void CubeSolver::add_scene()
     bottom_wall_pose.orientation.w = 1.0;
     bottom_wall_pose.position.x = 0;
     bottom_wall_pose.position.y = 0;
-    bottom_wall_pose.position.z = -0.5;//地面的高度
+    bottom_wall_pose.position.z = -0.3;//地面的高度
 
     // 将障碍物的属性、位置加入到障碍物的实例中
     bottom_wall.primitives.push_back(bottom_wall_primitive);
     bottom_wall.primitive_poses.push_back(bottom_wall_pose);
     bottom_wall.operation = bottom_wall.ADD;
 
+    // 声明一个附着物体
+    moveit_msgs::AttachedCollisionObject attached_object;
+    attached_object.link_name = "L_link6";
+    attached_object.object.header.frame_id = "L_link6";
+    attached_object.object.id = "box";
+
+    // 设置附着物体的位置
+    geometry_msgs::Pose attached_object_pose;
+    attached_object_pose.orientation.w = 1.0;
+    attached_object_pose.position.z = 0.18;
+    attached_object_pose.position.y = 0.037;
+
+    // 设置附着物体的外形、尺寸等属性   
+    shape_msgs::SolidPrimitive attached_object_primitive;
+    attached_object_primitive.type = attached_object_primitive.BOX;
+    attached_object_primitive.dimensions.resize(3);
+    attached_object_primitive.dimensions[0] = 0.01;
+    attached_object_primitive.dimensions[1] = 0.01;
+    attached_object_primitive.dimensions[2] = 0.04;
+
+    attached_object.object.primitives.push_back(attached_object_primitive);
+    attached_object.object.primitive_poses.push_back(attached_object_pose);
+    attached_object.object.operation = attached_object.object.ADD;
+    attached_object.touch_links = std::vector<std::string>{ "L_link5", "L_link_6" };
+
+
+
+
+
+
+
+
+// 声明一个附着物体
+    moveit_msgs::AttachedCollisionObject attached_object1;
+    attached_object1.link_name = "L_link6";
+    attached_object1.object.header.frame_id = "L_link6";
+    attached_object1.object.id = "box1";
+
+    // 设置附着物体的位置
+    geometry_msgs::Pose attached_object_pose1;
+    attached_object_pose1.orientation.w = 1.0;
+    attached_object_pose1.position.z = 0.18;
+    attached_object_pose1.position.y = -0.037;
+
+    // 设置附着物体的外形、尺寸等属性   
+    shape_msgs::SolidPrimitive attached_object_primitive1;
+    attached_object_primitive1.type = attached_object_primitive1.BOX;
+    attached_object_primitive1.dimensions.resize(3);
+    attached_object_primitive1.dimensions[0] = 0.01;
+    attached_object_primitive1.dimensions[1] = 0.01;
+    attached_object_primitive1.dimensions[2] = 0.04;
+
+    attached_object1.object.primitives.push_back(attached_object_primitive1);
+    attached_object1.object.primitive_poses.push_back(attached_object_pose1);
+    attached_object1.object.operation = attached_object1.object.ADD;
+    attached_object1.touch_links = std::vector<std::string>{ "L_link5", "L_link_6" };
+
+
+// 声明一个附着物体
+    moveit_msgs::AttachedCollisionObject attached_object2;
+    attached_object2.link_name = "R_link6";
+    attached_object2.object.header.frame_id = "R_link6";
+    attached_object2.object.id = "box2";
+
+    // 设置附着物体的位置
+    geometry_msgs::Pose attached_object_pose2;
+    attached_object_pose2.orientation.w = 1.0;
+    attached_object_pose2.position.z = 0.18;
+    attached_object_pose2.position.y = -0.037;
+
+    // 设置附着物体的外形、尺寸等属性   
+    shape_msgs::SolidPrimitive attached_object_primitive2;
+    attached_object_primitive2.type = attached_object_primitive2.BOX;
+    attached_object_primitive2.dimensions.resize(3);
+    attached_object_primitive2.dimensions[0] = 0.01;
+    attached_object_primitive2.dimensions[1] = 0.01;
+    attached_object_primitive2.dimensions[2] = 0.04;
+
+    attached_object2.object.primitives.push_back(attached_object_primitive2);
+    attached_object2.object.primitive_poses.push_back(attached_object_pose2);
+    attached_object2.object.operation = attached_object2.object.ADD;
+    attached_object2.touch_links = std::vector<std::string>{ "R_link5", "R_link_6" };
+
+// 声明一个附着物体
+    moveit_msgs::AttachedCollisionObject attached_object3;
+    attached_object3.link_name = "R_link6";
+    attached_object3.object.header.frame_id = "R_link6";
+    attached_object3.object.id = "box3";
+
+    // 设置附着物体的位置
+    geometry_msgs::Pose attached_object_pose3;
+    attached_object_pose3.orientation.w = 1.0;
+    attached_object_pose3.position.z = 0.18;
+    attached_object_pose3.position.y = 0.037;
+
+    // 设置附着物体的外形、尺寸等属性   
+    shape_msgs::SolidPrimitive attached_object_primitive3;
+    attached_object_primitive3.type = attached_object_primitive3.BOX;
+    attached_object_primitive3.dimensions.resize(3);
+    attached_object_primitive3.dimensions[0] = 0.01;
+    attached_object_primitive3.dimensions[1] = 0.01;
+    attached_object_primitive3.dimensions[2] = 0.04;
+
+    attached_object3.object.primitives.push_back(attached_object_primitive3);
+    attached_object3.object.primitive_poses.push_back(attached_object_pose3);
+    attached_object3.object.operation = attached_object3.object.ADD;
+    attached_object3.touch_links = std::vector<std::string>{ "R_link5", "R_link_6" };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // 所有障碍物加入列表后，再把障碍物加入到当前的情景中
     planning_scene.world.collision_objects.push_back(bottom_wall);
+    planning_scene.world.collision_objects.push_back(attached_object.object);
+    planning_scene.world.collision_objects.push_back(attached_object1.object);
+    planning_scene.world.collision_objects.push_back(attached_object2.object);
+    planning_scene.world.collision_objects.push_back(attached_object3.object);
     planning_scene.world.collision_objects.push_back(cube);
     planning_scene.is_diff = true;
     planning_scene_diff_publisher.publish(planning_scene);
+
+    // 声明去附着属性的物体
+    moveit_msgs::CollisionObject remove_box_object;
+    remove_box_object.id = "box";
+    remove_box_object.header.frame_id = "L_link6";
+    remove_box_object.operation = remove_box_object.REMOVE;
+
+    // 将物体附着到机器人上，并从场景中删除
+    planning_scene.world.collision_objects.clear();
+    planning_scene.world.collision_objects.push_back(remove_box_object);
+    planning_scene.robot_state.attached_collision_objects.push_back(attached_object);
+    planning_scene_diff_publisher.publish(planning_scene);
+
+
+
+
+
+
+
+
+
+
+
+
+    // 声明去附着属性的物体
+    moveit_msgs::CollisionObject remove_box_object1;
+    remove_box_object1.id = "box1";
+    remove_box_object1.header.frame_id = "L_link6";
+    remove_box_object1.operation = remove_box_object1.REMOVE;
+
+    // 将物体附着到机器人上，并从场景中删除
+    planning_scene.world.collision_objects.clear();
+    planning_scene.world.collision_objects.push_back(remove_box_object1);
+    planning_scene.robot_state.attached_collision_objects.push_back(attached_object1);
+    planning_scene_diff_publisher.publish(planning_scene);
+
+
+    // 声明去附着属性的物体
+    moveit_msgs::CollisionObject remove_box_object2;
+    remove_box_object2.id = "box2";
+    remove_box_object2.header.frame_id = "R_link6";
+    remove_box_object2.operation = remove_box_object2.REMOVE;
+
+    // 将物体附着到机器人上，并从场景中删除
+    planning_scene.world.collision_objects.clear();
+    planning_scene.world.collision_objects.push_back(remove_box_object2);
+    planning_scene.robot_state.attached_collision_objects.push_back(attached_object2);
+    planning_scene_diff_publisher.publish(planning_scene);
+
+    // 声明去附着属性的物体
+    moveit_msgs::CollisionObject remove_box_object3;
+    remove_box_object3.id = "box3";
+    remove_box_object3.header.frame_id = "R_link6";
+    remove_box_object3.operation = remove_box_object3.REMOVE;
+
+    // 将物体附着到机器人上，并从场景中删除
+    planning_scene.world.collision_objects.clear();
+    planning_scene.world.collision_objects.push_back(remove_box_object3);
+    planning_scene.robot_state.attached_collision_objects.push_back(attached_object3);
+    planning_scene_diff_publisher.publish(planning_scene);
+
+
+
+
+
+
+
+
 }
 
 bool CubeSolver::call_kociemba()
@@ -272,12 +467,15 @@ bool CubeSolver::start_pick()
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
 
-    target_pose_r.position.z = -0.05;
+    Gripper_mode mode = R_open;
+    gripper_control(mode);
+
+    target_pose_r.position.z = -0.12;
    
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
 
-    Gripper_mode mode = R_closed;
+    mode = R_closed;
     gripper_control(mode);
 
     target_pose_r.position.x = 0.0;
@@ -296,22 +494,52 @@ return true;
 
 }
 
+void CubeSolver::gripper_control_test()
+{
+
+    ros::ServiceClient l_client = nh_.serviceClient<xarm_msgs::GripperMove>("L_xarm6/gripper_move");
+    ros::ServiceClient r_client = nh_.serviceClient<xarm_msgs::GripperMove>("R_xarm6/gripper_move");
+
+    xarm_msgs::GripperMove l_srv;
+    xarm_msgs::GripperMove r_srv;
+    l_srv.request.pulse_pos = 850;
+    r_srv.request.pulse_pos = 300;
+    l_client.call(l_srv);
+    r_client.call(r_srv);
+}
+
 void CubeSolver::gripper_control(Gripper_mode mode)
 {
+
+    ros::ServiceClient l_client = nh_.serviceClient<xarm_msgs::GripperMove>("L_xarm6/gripper_move");
+    ros::ServiceClient r_client = nh_.serviceClient<xarm_msgs::GripperMove>("R_xarm6/gripper_move");
+
+    xarm_msgs::GripperMove l_srv;
+    xarm_msgs::GripperMove r_srv;
+    //l_srv.request.pulse_pos = 700;
+    //l_client.call(l_srv);
 if (mode == L_closed)
 {
+    l_srv.request.pulse_pos = 570;
+    l_client.call(l_srv);
     ROS_INFO("左手夹爪闭合");
 }
 else if (mode == L_open)
 {
+    l_srv.request.pulse_pos = 850;
+    l_client.call(l_srv);
     ROS_INFO("左手夹爪张开");
 }
 else if (mode == R_closed)
 {
+    r_srv.request.pulse_pos = 570;
+    r_client.call(r_srv);
     ROS_INFO("右手夹爪闭合");
 }
 else if (mode == R_open)
 {
+    r_srv.request.pulse_pos = 850;
+    r_client.call(r_srv);
     ROS_INFO("右手夹爪张开");
 }
 else 
@@ -341,15 +569,33 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0;
-    target_pose_l.position.z = 0.20;
+    target_pose_l.position.y = 0.06;
+    target_pose_l.position.z = 0.25;
     target_pose_l.orientation.x = 1;
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
+
+    /*target_pose_l.position.z = 0.245;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;*/
+
+    moveit_msgs::CollisionObject remove_cylinder_object;
+    remove_cylinder_object.id = "cube";
+    remove_cylinder_object.header.frame_id = "ground";
+    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
+    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
+
 gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
 L_xarm_move_to(5,1);
 gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+
+    planning_scene.world.collision_objects.push_back(cube);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
 return true;
 }
 else
@@ -436,7 +682,7 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.2;
+    target_pose_l.position.y = 0.30;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = -0.5;
     target_pose_l.orientation.y = -0.5;
@@ -445,9 +691,28 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
+    target_pose_l.position.y = 0.275;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+
+    moveit_msgs::CollisionObject remove_cylinder_object;
+    remove_cylinder_object.id = "cube";
+    remove_cylinder_object.header.frame_id = "ground";
+    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
+    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
 gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
 L_xarm_move_to(5,1);
 gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    planning_scene.world.collision_objects.push_back(cube);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
+
+    target_pose_l.position.y = 0.35;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
 return true;
 }
 else
@@ -471,7 +736,7 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.2;
+    target_pose_l.position.y = 0.30;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = -0.5;
     target_pose_l.orientation.y = -0.5;
@@ -480,9 +745,28 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
+
+    target_pose_l.position.y = 0.275;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+
+    moveit_msgs::CollisionObject remove_cylinder_object;
+    remove_cylinder_object.id = "cube";
+    remove_cylinder_object.header.frame_id = "ground";
+    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
+    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
 gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
 L_xarm_move_to(5,-1);
 gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    planning_scene.world.collision_objects.push_back(cube);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
+    target_pose_l.position.y = 0.35;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
 return true;
 }
 else
@@ -506,7 +790,7 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.2;
+    target_pose_l.position.y = 0.3;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = -0.5;
     target_pose_l.orientation.y = -0.5;
@@ -515,9 +799,29 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
+
+    target_pose_l.position.y = 0.275;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+
+    moveit_msgs::CollisionObject remove_cylinder_object;
+    remove_cylinder_object.id = "cube";
+    remove_cylinder_object.header.frame_id = "ground";
+    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
+    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
 gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
 L_xarm_move_to(5,2);
 gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    planning_scene.world.collision_objects.push_back(cube);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
+
+    target_pose_l.position.y = 0.35;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
 return true;
 }
 else
