@@ -63,9 +63,9 @@ void CubeSolver::add_scene()
    // shape_msgs::SolidPrimitive cube_primitive;
     cube_primitive.type = cube_primitive.BOX;
     cube_primitive.dimensions.resize(3);
-    cube_primitive.dimensions[0] = 0.055;//魔方长宽高
-    cube_primitive.dimensions[1] = 0.055;
-    cube_primitive.dimensions[2] = 0.055;
+    cube_primitive.dimensions[0] = 0.058;//魔方长宽高
+    cube_primitive.dimensions[1] = 0.058;
+    cube_primitive.dimensions[2] = 0.058;
 
     // 设置障碍物的位置
    // geometry_msgs::Pose cube_pose;
@@ -233,7 +233,7 @@ void CubeSolver::add_scene()
     planning_scene.world.collision_objects.push_back(attached_object1.object);
     planning_scene.world.collision_objects.push_back(attached_object2.object);
     planning_scene.world.collision_objects.push_back(attached_object3.object);
-    planning_scene.world.collision_objects.push_back(cube);
+    //planning_scene.world.collision_objects.push_back(cube);
     planning_scene.is_diff = true;
     planning_scene_diff_publisher.publish(planning_scene);
 
@@ -380,6 +380,24 @@ void CubeSolver::remove_scene()
     planning_scene_diff_publisher.publish(planning_scene);
 }
 
+void CubeSolver::remove_cube()//模型删除魔方
+{
+    moveit_msgs::CollisionObject remove_cylinder_object;
+    remove_cylinder_object.id = "cube";
+    remove_cylinder_object.header.frame_id = "ground";
+    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
+    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
+}
+
+void CubeSolver::add_cube()//模型添加魔方
+{
+    planning_scene.world.collision_objects.push_back(cube);
+    planning_scene.is_diff = true;
+    planning_scene_diff_publisher.publish(planning_scene);
+}
+
 bool CubeSolver::xarms_move_to(geometry_msgs::Pose pos1, geometry_msgs::Pose pos2)
 {
       xarms.setStartStateToCurrentState();
@@ -440,18 +458,22 @@ bool CubeSolver::R_xarm_move_to(geometry_msgs::Pose pos)
 
 bool CubeSolver::L_xarm_move_to(int index, double kind)
 {
+    remove_cube();
     std::vector<double> joint_group_positions = L_xarm.getCurrentJointValues();
     joint_group_positions[index] += kind * PI / 2.0;
     L_xarm.setJointValueTarget(joint_group_positions);
     L_xarm.move();
+    add_cube();
 }
 
 bool CubeSolver::R_xarm_move_to(int index, double kind)
 {
+    remove_cube();
     std::vector<double> joint_group_positions = R_xarm.getCurrentJointValues();
     joint_group_positions[index] += kind * PI / 2.0;
     R_xarm.setJointValueTarget(joint_group_positions);
     R_xarm.move();
+    add_cube();
 }
 
 bool CubeSolver::start_pick()
@@ -564,13 +586,14 @@ if (pick_num != 1)
 
 if (pick_num == 1)
 {
-ROS_INFO("顺时针旋转上面90度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    ROS_INFO("顺时针旋转上面90度。");
+    add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.06;
-    target_pose_l.position.z = 0.25;
+    target_pose_l.position.y = 0.05;
+    target_pose_l.position.z = 0.225;
     target_pose_l.orientation.x = 1;
 
     if(L_xarm_move_to(target_pose_l) == false)
@@ -580,23 +603,18 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
     if(L_xarm_move_to(target_pose_l) == false)
        return false;*/
 
-    moveit_msgs::CollisionObject remove_cylinder_object;
-    remove_cylinder_object.id = "cube";
-    remove_cylinder_object.header.frame_id = "ground";
-    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
-    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
-    planning_scene.is_diff = true;
-    planning_scene_diff_publisher.publish(planning_scene);
+    remove_cube();
 
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,1);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,1);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
+    add_cube();
 
-    planning_scene.world.collision_objects.push_back(cube);
-    planning_scene.is_diff = true;
-    planning_scene_diff_publisher.publish(planning_scene);
-return true;
+    target_pose_l.position.z = 0.3;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    return true;
 }
 else
 return false;
@@ -614,20 +632,27 @@ if (pick_num != 1)
 
 if (pick_num == 1)
 {
-ROS_INFO("逆时针旋转上面90度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    ROS_INFO("逆时针旋转上面90度。");
+    add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0;
-    target_pose_l.position.z = 0.20;
+    target_pose_l.position.y = 0.05;
+    target_pose_l.position.z = 0.225;
     target_pose_l.orientation.x = 1;
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,-1);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,-1);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();
+
+    target_pose_l.position.z = 0.3;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
 return true;
 }
 else
@@ -645,21 +670,28 @@ if (pick_num != 1)
 }
 if (pick_num == 1)
 {
-ROS_INFO("旋转上面180度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    ROS_INFO("旋转上面180度。");
+    add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0;
-    target_pose_l.position.z = 0.20;
+    target_pose_l.position.y = 0.05;
+    target_pose_l.position.z = 0.225;
     target_pose_l.orientation.x = 1;
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,2);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
-return true;
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,2);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();
+
+    target_pose_l.position.z = 0.3;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    return true;
 }
 else
 return false;
@@ -678,11 +710,12 @@ if (pick_num != 1)
 if (pick_num == 1)
 {
     ROS_INFO("顺时针旋转左面90度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.30;
+    target_pose_l.position.y = 0.275;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = -0.5;
     target_pose_l.orientation.y = -0.5;
@@ -691,29 +724,21 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-    target_pose_l.position.y = 0.275;
+    /*target_pose_l.position.y = 0.275;
     if(L_xarm_move_to(target_pose_l) == false)
-       return false;
+       return false;*/
 
-    moveit_msgs::CollisionObject remove_cylinder_object;
-    remove_cylinder_object.id = "cube";
-    remove_cylinder_object.header.frame_id = "ground";
-    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
-    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
-    planning_scene.is_diff = true;
-    planning_scene_diff_publisher.publish(planning_scene);
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,1);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,1);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
-    planning_scene.world.collision_objects.push_back(cube);
-    planning_scene.is_diff = true;
-    planning_scene_diff_publisher.publish(planning_scene);
+    add_cube();
 
     target_pose_l.position.y = 0.35;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-return true;
+    return true;
 }
 else
 return false;
@@ -732,11 +757,12 @@ if (pick_num != 1)
 if (pick_num == 1)
 {
     ROS_INFO("逆时针旋转左面90度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.30;
+    target_pose_l.position.y = 0.275;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = -0.5;
     target_pose_l.orientation.y = -0.5;
@@ -746,27 +772,20 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
 
-    target_pose_l.position.y = 0.275;
+    /*target_pose_l.position.y = 0.275;
     if(L_xarm_move_to(target_pose_l) == false)
-       return false;
+       return false;*/
 
-    moveit_msgs::CollisionObject remove_cylinder_object;
-    remove_cylinder_object.id = "cube";
-    remove_cylinder_object.header.frame_id = "ground";
-    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
-    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
-    planning_scene.is_diff = true;
-    planning_scene_diff_publisher.publish(planning_scene);
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,-1);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,-1);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();
 
-    planning_scene.world.collision_objects.push_back(cube);
-    planning_scene.is_diff = true;
-    planning_scene_diff_publisher.publish(planning_scene);
     target_pose_l.position.y = 0.35;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
+
 return true;
 }
 else
@@ -786,11 +805,12 @@ if (pick_num != 1)
 if (pick_num == 1)
 {
     ROS_INFO("旋转左面180度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.3;
+    target_pose_l.position.y = 0.275;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = -0.5;
     target_pose_l.orientation.y = -0.5;
@@ -800,29 +820,21 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
 
-    target_pose_l.position.y = 0.275;
+    /*target_pose_l.position.y = 0.275;
     if(L_xarm_move_to(target_pose_l) == false)
-       return false;
+       return false;*/
 
-    moveit_msgs::CollisionObject remove_cylinder_object;
-    remove_cylinder_object.id = "cube";
-    remove_cylinder_object.header.frame_id = "ground";
-    remove_cylinder_object.operation = remove_cylinder_object.REMOVE;
-    planning_scene.world.collision_objects.push_back(remove_cylinder_object);
-    planning_scene.is_diff = true;
-    planning_scene_diff_publisher.publish(planning_scene);
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,2);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,2);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
-    planning_scene.world.collision_objects.push_back(cube);
-    planning_scene.is_diff = true;
-    planning_scene_diff_publisher.publish(planning_scene);
+    add_cube();
 
     target_pose_l.position.y = 0.35;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-return true;
+    return true;
 }
 else
 return false;
@@ -841,7 +853,16 @@ if (pick_num != 1)
 if (pick_num == 1)
 {
     ROS_INFO("顺时针旋转下面90度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    R_xarm_move_to(5,2);
+
+    turn_U0();
+
+
+    R_xarm_move_to(5,-2);
+
+    /*add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
@@ -854,9 +875,11 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,1);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,1);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();*/
 return true;
 }
 else
@@ -876,7 +899,15 @@ if (pick_num != 1)
 if (pick_num == 1)
 {
     ROS_INFO("逆时针旋转下面90度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    //remove_cube();
+
+    R_xarm_move_to(5,2);
+
+    turn_U1();
+
+    R_xarm_move_to(5,-2);
+    /*add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
@@ -889,9 +920,11 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,-1);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,-1);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();*/
 return true;
 }
 else
@@ -911,7 +944,16 @@ if (pick_num != 1)
 if (pick_num == 1)
 {
     ROS_INFO("旋转下面180度。");
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    //remove_cube();
+
+    R_xarm_move_to(5,2);
+
+    turn_U2();
+
+    R_xarm_move_to(5,-2);
+    /*add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
@@ -924,9 +966,11 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-L_xarm_move_to(5,2);
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,2);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();*/
 return true;
 }
 else
@@ -945,7 +989,13 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("顺时针旋转前面90度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    L_xarm_move_to(5, -2);
+
+    turn_B0();
+
+    L_xarm_move_to(5, 2);
+/*gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
@@ -960,7 +1010,7 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
        return false;
 gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
 R_xarm_move_to(5,1);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+gripper_control((Gripper_mode)(R_open));//张开左夹爪*/
 return true;
 }
 else
@@ -980,7 +1030,13 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("逆时针旋转前面90度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    L_xarm_move_to(5, -2);
+
+    turn_B1();
+
+    L_xarm_move_to(5, 2);
+/*gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
@@ -995,7 +1051,7 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
        return false;
 gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
 R_xarm_move_to(5,-1);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+gripper_control((Gripper_mode)(R_open));//张开左夹爪*/
 return true;
 }
 else
@@ -1014,7 +1070,13 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("旋转前面180度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    L_xarm_move_to(5, -2);
+
+    turn_B2();
+
+    L_xarm_move_to(5, 2);
+/*gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
@@ -1029,7 +1091,7 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
        return false;
 gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
 R_xarm_move_to(5,2);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+gripper_control((Gripper_mode)(R_open));//张开左夹爪*/
 return true;
 }
 else
@@ -1049,11 +1111,12 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("顺时针旋转右面90度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = -0.2;
+    target_pose_r.position.y = -0.165;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1062,9 +1125,12 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
-R_xarm_move_to(5,1);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+    R_xarm_move_to(5,1);
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    target_pose_r.position.y = -0.25;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
 return true;
 }
 else
@@ -1084,11 +1150,12 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("逆时针旋转右面90度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = -0.2;
+    target_pose_r.position.y = -0.165;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1097,9 +1164,12 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
-R_xarm_move_to(5, -1);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+    R_xarm_move_to(5, -1);
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    target_pose_r.position.y = -0.25;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
 return true;
 }
 else
@@ -1119,11 +1189,12 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("旋转右面180度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = -0.2;
+    target_pose_r.position.y = -0.165;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1132,9 +1203,12 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
-R_xarm_move_to(5, 2);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+    R_xarm_move_to(5, 2);
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    target_pose_r.position.y = -0.25;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
 return true;
 }
 else
@@ -1155,12 +1229,13 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("顺时针旋转后面90度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = 0;
-    target_pose_r.position.z = 0.2;
+    target_pose_r.position.y = 0.05;
+    target_pose_r.position.z = 0.225;
     target_pose_r.orientation.x = 0.7071068;
     target_pose_r.orientation.y = 0.7071068;
     target_pose_r.orientation.z = 0;
@@ -1168,10 +1243,14 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
-R_xarm_move_to(5,1);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
-return true;
+    gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+    R_xarm_move_to(5,1);
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    target_pose_r.position.z = 0.28;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    return true;
 }
 else
 return false;
@@ -1190,12 +1269,13 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("逆时针旋转后面90度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = 0;
-    target_pose_r.position.z = 0.2;
+    target_pose_r.position.y = 0.05;
+    target_pose_r.position.z = 0.225;
     target_pose_r.orientation.x = 0.7071068;
     target_pose_r.orientation.y = 0.7071068;
     target_pose_r.orientation.z = 0;
@@ -1203,10 +1283,14 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
-R_xarm_move_to(5, -1);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
-return true;
+    gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+    R_xarm_move_to(5, -1);
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    target_pose_r.position.z = 0.28;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    return true;
 }
 else
 return false;
@@ -1224,12 +1308,13 @@ if (pick_num != 2)
 if (pick_num == 2)
 {
     ROS_INFO("旋转后面180度。");
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
+    add_cube();
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = 0;
-    target_pose_r.position.z = 0.2;
+    target_pose_r.position.y = 0.05;
+    target_pose_r.position.z = 0.225;
     target_pose_r.orientation.x = 0.7071068;
     target_pose_r.orientation.y = 0.7071068;
     target_pose_r.orientation.z = 0;
@@ -1237,10 +1322,14 @@ gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
-R_xarm_move_to(5, 2);
-gripper_control((Gripper_mode)(R_open));//张开左夹爪
-return true;
+    gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
+    R_xarm_move_to(5, 2);
+    gripper_control((Gripper_mode)(R_open));//张开左夹爪
+
+    target_pose_r.position.z = 0.28;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    return true;
 }
 else
 return false;
@@ -1252,11 +1341,13 @@ bool CubeSolver::switch_fix_arm()
 {
 if (pick_num == 1)
 {
-gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    add_cube();
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.15;
+    target_pose_l.position.y = 0.25;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = 0.7071068;
     target_pose_l.orientation.y = 0;
@@ -1268,13 +1359,15 @@ gripper_control((Gripper_mode)(L_open));//张开左夹爪
     gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
     gripper_control((Gripper_mode)(R_open));//张开右夹爪
     R_move_to_ready_state();
-    L_xarm_move_to(5,1);
+    L_xarm_move_to(5, 1);
     pick_num = 2;
     return true;
 }
 else if (pick_num == 2)
 {    
     gripper_control((Gripper_mode)(R_open));//张开右夹爪
+
+    add_cube();
     R_move_to_ready_state();
     L_xarm_move_to(5, -1);
 
@@ -1290,6 +1383,8 @@ else if (pick_num == 2)
        return false;
     gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
     gripper_control((Gripper_mode)(L_open));//张开右夹爪
+
+    L_move_to_safe_state();
     pick_num = 1;
     return true;
 }

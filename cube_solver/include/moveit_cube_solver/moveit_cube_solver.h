@@ -69,6 +69,8 @@ class CubeSolver
 	CubeSolver(ros::NodeHandle n_);
         void add_scene();
         void remove_scene();
+        void remove_cube();
+        void add_cube();
         bool call_kociemba();
         void move_to_safe_state();
         void L_move_to_safe_state();
