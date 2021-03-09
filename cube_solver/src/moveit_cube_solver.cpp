@@ -41,8 +41,10 @@ CubeSolver::CubeSolver(ros::NodeHandle n_) :
     L_xarm.setGoalPositionTolerance(0.001);
     L_xarm.setGoalOrientationTolerance(0.01);
 
-    L_xarm.setMaxAccelerationScalingFactor(0.5);
-    L_xarm.setMaxVelocityScalingFactor(0.5);
+    R_xarm.setMaxAccelerationScalingFactor(0.1);
+    R_xarm.setMaxVelocityScalingFactor(0.1);
+    R_xarm.setMaxAccelerationScalingFactor(0.1);
+    R_xarm.setMaxVelocityScalingFactor(0.1);
 
     solve_map = {{"U", 0}, {"U'", 1}, {"U2", 2}, 
                  {"L", 3}, {"L'", 4}, {"L2", 5}, 
