@@ -40,9 +40,11 @@ CubeSolver::CubeSolver(ros::NodeHandle n_) :
 
     L_xarm.setGoalPositionTolerance(0.001);
     L_xarm.setGoalOrientationTolerance(0.01);
+    R_xarm.setGoalPositionTolerance(0.001);
+    R_xarm.setGoalOrientationTolerance(0.01);
 
-    R_xarm.setMaxAccelerationScalingFactor(0.1);
-    R_xarm.setMaxVelocityScalingFactor(0.1);
+    L_xarm.setMaxAccelerationScalingFactor(0.1);
+    L_xarm.setMaxVelocityScalingFactor(0.1);
     R_xarm.setMaxAccelerationScalingFactor(0.1);
     R_xarm.setMaxVelocityScalingFactor(0.1);
 
@@ -73,7 +75,7 @@ void CubeSolver::add_scene()
    // geometry_msgs::Pose cube_pose;
     cube_pose.orientation.w = 1.0;
     cube_pose.position.x = 0;//魔方位置xyz
-    cube_pose.position.y = 0.05;
+    cube_pose.position.y = 0.043;
     cube_pose.position.z = 0;//-0.25
 
     // 将障碍物的属性、位置加入到障碍物的实例中
@@ -124,7 +126,7 @@ void CubeSolver::add_scene()
     attached_object_primitive.dimensions.resize(3);
     attached_object_primitive.dimensions[0] = 0.01;
     attached_object_primitive.dimensions[1] = 0.01;
-    attached_object_primitive.dimensions[2] = 0.04;
+    attached_object_primitive.dimensions[2] = 0.05;
 
     attached_object.object.primitives.push_back(attached_object_primitive);
     attached_object.object.primitive_poses.push_back(attached_object_pose);
@@ -156,7 +158,7 @@ void CubeSolver::add_scene()
     attached_object_primitive1.dimensions.resize(3);
     attached_object_primitive1.dimensions[0] = 0.01;
     attached_object_primitive1.dimensions[1] = 0.01;
-    attached_object_primitive1.dimensions[2] = 0.04;
+    attached_object_primitive1.dimensions[2] = 0.05;
 
     attached_object1.object.primitives.push_back(attached_object_primitive1);
     attached_object1.object.primitive_poses.push_back(attached_object_pose1);
@@ -182,7 +184,7 @@ void CubeSolver::add_scene()
     attached_object_primitive2.dimensions.resize(3);
     attached_object_primitive2.dimensions[0] = 0.01;
     attached_object_primitive2.dimensions[1] = 0.01;
-    attached_object_primitive2.dimensions[2] = 0.04;
+    attached_object_primitive2.dimensions[2] = 0.05;
 
     attached_object2.object.primitives.push_back(attached_object_primitive2);
     attached_object2.object.primitive_poses.push_back(attached_object_pose2);
@@ -207,7 +209,7 @@ void CubeSolver::add_scene()
     attached_object_primitive3.dimensions.resize(3);
     attached_object_primitive3.dimensions[0] = 0.01;
     attached_object_primitive3.dimensions[1] = 0.01;
-    attached_object_primitive3.dimensions[2] = 0.04;
+    attached_object_primitive3.dimensions[2] = 0.05;
 
     attached_object3.object.primitives.push_back(attached_object_primitive3);
     attached_object3.object.primitive_poses.push_back(attached_object_pose3);
@@ -494,7 +496,7 @@ bool CubeSolver::start_pick()
     Gripper_mode mode = R_open;
     gripper_control(mode);
 
-    target_pose_r.position.z = -0.12;
+    target_pose_r.position.z = -0.178;
    
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
@@ -678,10 +680,54 @@ if (pick_num == 1)
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.05;
-    target_pose_l.position.z = 0.225;
+    target_pose_l.position.y = 0.043;
+    target_pose_l.position.z = 0.25;
     target_pose_l.orientation.x = 1;
 
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    target_pose_l.position.z = 0.223;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    remove_cube();
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    L_xarm_move_to(5,2);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+    add_cube();
+
+    target_pose_l.position.z = 0.3;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    return true;
+}
+else
+return false;
+}
+
+bool CubeSolver::turn_UD2()
+{
+if (pick_num != 1)
+{
+   if (switch_fix_arm() == false)
+   {
+      return false;
+   }
+}
+if (pick_num == 1)
+{
+    ROS_INFO("旋转上面180度。");
+    add_cube();
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0;
+    target_pose_l.position.y = 0.043;
+    target_pose_l.position.z = 0.25;
+    target_pose_l.orientation.x = 1;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    target_pose_l.position.z = 0.218;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     remove_cube();
@@ -717,7 +763,7 @@ if (pick_num == 1)
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.275;
+    target_pose_l.position.y = 0.28;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = -0.5;
     target_pose_l.orientation.y = -0.5;
@@ -726,9 +772,9 @@ if (pick_num == 1)
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-    /*target_pose_l.position.y = 0.275;
+    target_pose_l.position.y = 0.265;
     if(L_xarm_move_to(target_pose_l) == false)
-       return false;*/
+       return false;
 
     remove_cube();
     gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
@@ -951,7 +997,7 @@ if (pick_num == 1)
 
     R_xarm_move_to(5,2);
 
-    turn_U2();
+    turn_UD2();
 
     R_xarm_move_to(5,-2);
     /*add_cube();
