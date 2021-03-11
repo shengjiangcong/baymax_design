@@ -13,7 +13,8 @@ int main(int argc, char **argv)
 
     CubeSolver Solver(n);//创建对象
 
-    //Solver.add_scene();//添加环境
+    //Solver.remove_scene();//删除环境
+    //Solver.remove_cube();//删除魔方
 
     Solver.move_to_safe_state();//移动到安全位置
 
@@ -32,15 +33,17 @@ int main(int argc, char **argv)
     std::deque<std::string> cube_deque;
 
     cube_deque.push_back("L");
-    cube_deque.push_back("D");
+    //cube_deque.push_back("D");
     //cube_deque.push_back("D2");
-    cube_deque.push_back("U2");
-    cube_deque.push_back("L2");
-    cube_deque.push_back("D'");
-    cube_deque.push_back("U");
-    cube_deque.push_back("U'");
-    cube_deque.push_back("L'");
-    cube_deque.push_back("D2");
+    //cube_deque.push_back("U2");
+    //cube_deque.push_back("L2");
+    //cube_deque.push_back("D'");
+    //cube_deque.push_back("U");
+    //cube_deque.push_back("U'");
+    //cube_deque.push_back("L'");
+    cube_deque.push_back("R");
+    cube_deque.push_back("R'");
+    cube_deque.push_back("R2");
     //cube_deque.push_back("L");
     //cube_deque.push_back("B2");
     //cube_deque.push_back("R2");

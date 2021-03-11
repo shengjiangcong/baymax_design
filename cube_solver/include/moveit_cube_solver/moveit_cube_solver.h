@@ -33,7 +33,7 @@ limitations under the License.
 #include <deque>
 #include <unordered_map>
 #include <xarm_msgs/GripperMove.h>
-
+#include <xarm_msgs/GripperConfig.h>
 
 //
 //right:横向;-0.707,0,0,0.707

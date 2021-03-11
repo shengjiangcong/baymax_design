@@ -48,6 +48,16 @@ CubeSolver::CubeSolver(ros::NodeHandle n_) :
     R_xarm.setMaxAccelerationScalingFactor(0.1);
     R_xarm.setMaxVelocityScalingFactor(0.1);
 
+    ros::ServiceClient lgripper_client = nh_.serviceClient<xarm_msgs::GripperConfig>("L_xarm6/gripper_config");
+    ros::ServiceClient rgripper_client = nh_.serviceClient<xarm_msgs::GripperConfig>("R_xarm6/gripper_config");
+
+    xarm_msgs::GripperConfig lgripperspeed_srv;
+    xarm_msgs::GripperConfig rgripperspeed_srv;
+    lgripperspeed_srv.request.pulse_vel = 1500;
+    rgripperspeed_srv.request.pulse_vel = 1500;
+    lgripper_client.call(lgripperspeed_srv);
+    rgripper_client.call(rgripperspeed_srv);
+
     solve_map = {{"U", 0}, {"U'", 1}, {"U2", 2}, 
                  {"L", 3}, {"L'", 4}, {"L2", 5}, 
                  {"D", 6}, {"D'", 7}, {"D2", 8},
@@ -1255,7 +1265,7 @@ if (pick_num == 2)
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = -0.165;
+    target_pose_r.position.y = -0.175;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1264,10 +1274,13 @@ if (pick_num == 2)
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
+    target_pose_r.position.y = -0.166;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
     gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
     R_xarm_move_to(5,1);
     gripper_control((Gripper_mode)(R_open));//张开左夹爪
-    target_pose_r.position.y = -0.25;
+    target_pose_r.position.y = -0.22;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
 return true;
@@ -1294,7 +1307,7 @@ if (pick_num == 2)
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = -0.165;
+    target_pose_r.position.y = -0.175;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1303,10 +1316,13 @@ if (pick_num == 2)
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
+    target_pose_r.position.y = -0.166;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
     gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
     R_xarm_move_to(5, -1);
     gripper_control((Gripper_mode)(R_open));//张开左夹爪
-    target_pose_r.position.y = -0.25;
+    target_pose_r.position.y = -0.22;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
 return true;
@@ -1333,7 +1349,7 @@ if (pick_num == 2)
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0;
-    target_pose_r.position.y = -0.165;
+    target_pose_r.position.y = -0.175;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1342,10 +1358,13 @@ if (pick_num == 2)
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
+    target_pose_r.position.y = -0.166;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
     gripper_control((Gripper_mode)(R_closed));//闭合左夹爪
     R_xarm_move_to(5, 2);
     gripper_control((Gripper_mode)(R_open));//张开左夹爪
-    target_pose_r.position.y = -0.25;
+    target_pose_r.position.y = -0.22;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
 return true;
@@ -1486,13 +1505,16 @@ if (pick_num == 1)
 
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.25;
+    target_pose_l.position.y = 0.28;
     target_pose_l.position.z = 0;
     target_pose_l.orientation.x = 0.7071068;
     target_pose_l.orientation.y = 0;
     target_pose_l.orientation.z = 0;
     target_pose_l.orientation.w = 0.7071068;
 
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    target_pose_l.position.y = 0.25;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
