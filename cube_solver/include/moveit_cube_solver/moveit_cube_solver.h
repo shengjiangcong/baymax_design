@@ -89,6 +89,8 @@ class CubeSolver
         bool turn_U0();//顺时针90
         bool turn_U1();//逆时针90
         bool turn_U2();//180
+        bool turn_UD0();
+        bool turn_UD1();
         bool turn_UD2();
 
         bool turn_L0();//顺时针90

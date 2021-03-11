@@ -5,8 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /MotionPlanning1
-        - /MotionPlanning1/Scene Geometry1
         - /MotionPlanning1/Planning Request1
+        - /MotionPlanning1/Planning Metrics1
         - /MotionPlanning1/Planned Path1
       Splitter Ratio: 0.6251830458641052
     Tree Height: 140
@@ -248,7 +248,7 @@ Visualization Manager:
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
         Planning Group: xarm6s
-        Query Goal State: true
+        Query Goal State: false
         Query Start State: false
         Show Workspace: false
         Start State Alpha: 1
@@ -620,10 +620,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3097975254058838
+      Pitch: 0.3647974729537964
       Target Frame: ground
       Value: XYOrbit (rviz)
-      Yaw: 6.099951267242432
+      Yaw: 0.056765951216220856
     Saved: ~
 Window Geometry:
   Displays:
@@ -641,5 +641,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1108
-  X: 40
-  Y: 0
+  X: 67
+  Y: 27
