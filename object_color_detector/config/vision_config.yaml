@@ -1,9 +1,38 @@
 blue:
+  hmax: 248
+  hmin: 183
+  smax: 255
+  smin: 224
+  vmax: 111
+  vmin: 67
+green:
+  hmax: 171
+  hmin: 101
+  smax: 255
+  smin: 140
+  vmax: 150
+  vmin: 72
+white:
   hmax: 230
   hmin: 190
-green:
-  hmax: 190
-  hmin: 100
+  smax: 230
+  smin: 190
+  vmax: 230
+  vmin: 190
+yellow:
+  hmax: 98
+  hmin: 40
+  smax: 255
+  smin: 147
+  vmax: 178
+  vmin: 86
+orange:
+  hmax: 31
+  hmin: 0
+  smax: 255
+  smin: 131
+  vmax: 193
+  vmin: 144
 image:
   ROI_height: 370
   ROI_wdith: 640
@@ -16,5 +45,9 @@ image:
   - -0.000669988552959397
   - 0.25727560433640845
 red:
-  hmax: 60
+  hmax: 360
   hmin: 0
+  smax: 255
+  smin: 180
+  vmax: 107
+  vmin: 50

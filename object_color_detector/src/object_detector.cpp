@@ -31,7 +31,9 @@ void ObjectDetector::detection(cv::Mat image2hsv, HSV hsv_para, std::vector<cv::
     //step3:设置H(色相)阈值，显示Inrange区域对应的输入图像(仅调试使用)
     cv::Mat img_Inrange;
     img_Inrange = cv::Mat::zeros(image2hsv.size(), CV_32FC3);
-
+    
+    std::cout << hsv_para.smin / float(255) << std::endl;
+ 
     cv::Mat mask;
     cv::inRange(image2hsv,
                 cv::Scalar(hsv_para.hmin, hsv_para.smin / float(255), hsv_para.vmin / float(255)),
