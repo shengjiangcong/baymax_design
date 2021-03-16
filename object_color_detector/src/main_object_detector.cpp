@@ -5,9 +5,14 @@
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
+#include <stdio.h>
+#include <vector>
 
 #include "object_color_detector/object_detector.h"
 #include "object_color_detector/DetectObjectSrv.h"
+
+using namespace std;
+using namespace cv;
 
 image_transport::Publisher image_pub_;
 probot::vision::ObjectDetector objectDetector_;
@@ -16,6 +21,18 @@ probot::vision::ObjectDetector objectDetector_;
 probot::vision::HSV hsv_object[6];
 
 int ROI_x, ROI_y, ROI_wdith, ROI_height;
+
+bool in_hsv_range(cv::Mat image2hsv, Point p, probot::vision::HSV hsv_para)
+{
+        double h = image2hsv.at<Vec3b>(p)[0];//得到H的数值
+        double s = image2hsv.at<Vec3b>(p)[1];//得到S的数值
+        double v = image2hsv.at<Vec3b>(p)[2];//得到V的数值
+
+        if (h >= hsv_para.hmin && h <= hsv_para.hmax && s >= hsv_para.smin && s <= hsv_para.smax && v >= hsv_para.vmin && v <= hsv_para.vmax)
+            return true;
+        else
+            return false;
+}
 
 // service回调函数，输入参数req，输出参数res
 bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
@@ -56,12 +73,13 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
     //彩色图像的灰度值归一化，颜色空间转换，输出为HSV格式图像
     cv::Mat image2hsv, bgr;
     img_input.convertTo(bgr, CV_32FC3, 1.0 / 255, 0);
-    cv::cvtColor(bgr, image2hsv,  cv::COLOR_BGR2HSV);
+    cv::cvtColor(img_input, image2hsv,  cv::COLOR_BGR2HSV);
+
 
     int box2draw =0;
  
     //红色
-    objectDetector_.detection(image2hsv, hsv_object[object_color_detector::DetectObjectSrvRequest::RED_OBJECT], &box);
+   /* objectDetector_.detection(image2hsv, hsv_object[object_color_detector::DetectObjectSrvRequest::RED_OBJECT], &box);
     //遍历box中所有的Rect，标记检测出来的目标
     if(!box.empty())
     {
@@ -148,14 +166,50 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
              targetPose.position.y = box.at(box2draw).y + cvRound(box.at(box2draw).height/2) + ROI_y;
              res.blueObjList.push_back(targetPose);
         }
-    }  
+    }  */
     //cv::imshow("result", img_input);
     //cv::waitKey(100);
+    Point p1(40, 40);//左上角的格子
+    const int widdth = 40;
+    vector<Point> a(9);
+
+    for (int i = 0; i < a.size(); i++)
+    {
+        a[i].x = p1.x + (i % 3) * widdth;
+        a[i].y = p1.y + (i / 3) * widdth;
+
+        circle(img_input, a[i], 3,hsv_object[3].color,-1);
+        
+        double h = image2hsv.at<Vec3b>(a[i])[0];//得到H的数值
+        double s = image2hsv.at<Vec3b>(a[i])[1];//得到S的数值
+        double v = image2hsv.at<Vec3b>(a[i])[2];//得到V的数值
+
+        cout << "point" << i << ": h" << h << " s" << s << " v" << v << endl; 
+    }
+
+    for (int i = 0; i < a.size(); i++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+           if (in_hsv_range(image2hsv, a[i], hsv_object[j]))
+           {
+                cout << "point" << i << ": ";
+                cout << j << endl;
+                break;
+           }
+        }
+    }
+
+
+
+
+   
 
     image_pub_.publish(cv_ptr->toImageMsg());
 
     return true;
 }
+
 
 int main(int argc, char **argv)
 {
