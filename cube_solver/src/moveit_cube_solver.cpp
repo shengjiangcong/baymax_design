@@ -15,6 +15,9 @@ limitations under the License.
 ***********************************************************************/
 
 #include "moveit_cube_solver/moveit_cube_solver.h"
+#include <iostream>
+
+using namespace std;
 
 CubeSolver::CubeSolver(ros::NodeHandle n_) :
     L_xarm("L_xarm6"), 
@@ -490,10 +493,71 @@ bool CubeSolver::R_xarm_move_to(int index, double kind)
     add_cube();
 }
 
+bool CubeSolver::take_photos()
+{
+    ROS_INFO("准备拍照。");
+
+    geometry_msgs::Pose target_pose_r;
+   /* target_pose_r.position.x = 0.0;
+    target_pose_r.position.y = 0.0;
+    target_pose_r.position.z = 0.05;
+    target_pose_r.orientation.x = 1.0;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+
+    Gripper_mode mode = R_open;
+    gripper_control(mode);
+
+    target_pose_r.position.z = -0.178;
+   
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+
+    mode = R_closed;
+    gripper_control(mode);*/
+
+    target_pose_r.position.x = 0.0;
+    target_pose_r.position.y = -0.15;
+    target_pose_r.position.z = 0;
+    target_pose_r.orientation.x = -0.5;
+    target_pose_r.orientation.y = -0.5;
+    target_pose_r.orientation.z = -0.5;
+    target_pose_r.orientation.w = 0.5;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    pick_num = 1;//右手用于固定魔方，左手旋转
+    add_scene();
+    cout << "按任意建继续" << endl;
+    int tmp;
+    cin >> tmp;
+
+    R_xarm_move_to(5,1);
+
+    cout << "按任意建继续" << endl;
+    cin >> tmp;
+    /*cout << "按任意建继续" << endl;
+    cin >> tmp;
+    cout << "按任意建继续" << endl;
+    cin >> tmp;
+    cout << "按任意建继续" << endl;
+    cin >> tmp;
+    cout << "按任意建继续" << endl;
+    cin >> tmp;
+    cout << "按任意建继续" << endl;
+    cin >> tmp;*/
+
+    //R_xarm_move_to(5,2);
+
+return true;
+
+}
+
 bool CubeSolver::start_pick()
 {
     ROS_INFO("准备抓起魔方。");
-
+    //remove_scene();
+    //remove_cube();
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0.0;
     target_pose_r.position.y = 0.0;

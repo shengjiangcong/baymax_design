@@ -17,6 +17,7 @@ int main(int argc, char **argv)
     //Solver.remove_cube();//删除魔方
 
     Solver.move_to_safe_state();//移动到安全位置
+    //Solver.take_photos();
 
     if(Solver.start_pick() == false)//固定位置抓取魔方，准备开始
     {
@@ -42,8 +43,8 @@ int main(int argc, char **argv)
     //cube_deque.push_back("U'");
     //cube_deque.push_back("L'");
     cube_deque.push_back("R");
-    cube_deque.push_back("R'");
-    cube_deque.push_back("R2");
+   // cube_deque.push_back("R'");
+    //cube_deque.push_back("R2");
     //cube_deque.push_back("L");
     //cube_deque.push_back("B2");
     //cube_deque.push_back("R2");

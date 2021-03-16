@@ -83,6 +83,7 @@ class CubeSolver
         bool R_xarm_move_to(int index, double kind);
         std::deque<std::string> get_cube_deque() {return cube_deque;}
         int pick_num;//1表示右手固定魔方，2表示左手
+        bool take_photos();
         bool start_pick();
         void gripper_control(Gripper_mode mode);
         void gripper_control_test();
