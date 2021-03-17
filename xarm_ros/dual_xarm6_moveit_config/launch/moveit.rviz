@@ -248,7 +248,7 @@ Visualization Manager:
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
         Planning Group: xarm6s
-        Query Goal State: false
+        Query Goal State: true
         Query Start State: false
         Show Workspace: false
         Start State Alpha: 1
@@ -642,4 +642,4 @@ Window Geometry:
     collapsed: false
   Width: 1108
   X: 67
-  Y: 27
+  Y: 0
