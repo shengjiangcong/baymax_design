@@ -517,9 +517,9 @@ bool CubeSolver::take_photos()
     mode = R_closed;
     gripper_control(mode);*/
 
-    target_pose_r.position.x = 0.0;
-    target_pose_r.position.y = -0.15;
-    target_pose_r.position.z = 0;
+    target_pose_r.position.x = -0.04;
+    target_pose_r.position.y = -0.126;
+    target_pose_r.position.z = -0.175;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
     target_pose_r.orientation.z = -0.5;
@@ -1602,12 +1602,15 @@ else if (pick_num == 2)
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0.0;
-    target_pose_r.position.y = -0.15;
+    target_pose_r.position.y = -0.2;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
     target_pose_r.orientation.z = -0.5;
     target_pose_r.orientation.w = 0.5;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    target_pose_r.position.y = -0.15;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
     gripper_control((Gripper_mode)(R_closed));//闭合左夹爪

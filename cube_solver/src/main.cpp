@@ -34,16 +34,16 @@ int main(int argc, char **argv)
     std::deque<std::string> cube_deque;
 
     cube_deque.push_back("L");
-    cube_deque.push_back("U2");
+    /*cube_deque.push_back("U2");
     cube_deque.push_back("D");
     cube_deque.push_back("L'");
     cube_deque.push_back("U");
     cube_deque.push_back("L");
     cube_deque.push_back("R");
-    cube_deque.push_back("B");
-    cube_deque.push_back("R'");
-    //cube_deque.push_back("R");
-   // cube_deque.push_back("R'");
+    cube_deque.push_back("B");*/
+    //cube_deque.push_back("R'");
+    cube_deque.push_back("F");
+    cube_deque.push_back("L");
     //cube_deque.push_back("R2");
     //cube_deque.push_back("L");
     //cube_deque.push_back("B2");
