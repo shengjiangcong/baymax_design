@@ -34,10 +34,10 @@ orange:
   vmax: 193
   vmin: 144
 image:
-  ROI_height: 200
-  ROI_wdith: 200
-  ROI_x: 240
-  ROI_y: 240
+  ROI_height: 480
+  ROI_wdith: 640
+  ROI_x: 0
+  ROI_y: 0
   reg_x:
   - -0.0006621064632114358
   - 0.5132114355871262

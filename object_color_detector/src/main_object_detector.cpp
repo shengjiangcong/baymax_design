@@ -169,8 +169,8 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
     }  */
     //cv::imshow("result", img_input);
     //cv::waitKey(100);
-    Point p1(40, 40);//左上角的格子
-    const int widdth = 40;
+    Point p1(291, 273);//左上角的格子
+    const int widdth = 71;
     vector<Point> a(9);
 
     for (int i = 0; i < a.size(); i++)

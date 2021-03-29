@@ -328,6 +328,8 @@ bool CubeSolver::call_kociemba()
     ros::ServiceClient client = nh_.serviceClient<cube_solver::solve_list>("kociemba");
     cube_solver::solve_list srv;
     srv.request.flag = true;
+    srv.request.color_list = input_cube_color;
+
     if (client.call(srv))
     {
       std::string list = srv.response.list;
@@ -493,61 +495,95 @@ bool CubeSolver::R_xarm_move_to(int index, double kind)
     add_cube();
 }
 
+bool CubeSolver::L_xarm_move_to_nocube(int index, double kind)
+{
+    //remove_cube();
+    std::vector<double> joint_group_positions = L_xarm.getCurrentJointValues();
+    joint_group_positions[index] += kind * PI / 2.0;
+    L_xarm.setJointValueTarget(joint_group_positions);
+    L_xarm.move();
+    //add_cube();
+}
+
+bool CubeSolver::R_xarm_move_to_nocube(int index, double kind)
+{
+    //remove_cube();
+    std::vector<double> joint_group_positions = R_xarm.getCurrentJointValues();
+    joint_group_positions[index] += kind * PI / 2.0;
+    R_xarm.setJointValueTarget(joint_group_positions);
+    R_xarm.move();
+    //add_cube();
+}
+
 bool CubeSolver::take_photos()
 {
     ROS_INFO("准备拍照。");
+    R_xarm_move_to_nocube(5, -1);
+    ROS_INFO("拍白色面");
+    R_xarm_move_to_nocube(5, 2);
+    ROS_INFO("拍黄色面");
 
     geometry_msgs::Pose target_pose_r;
-   /* target_pose_r.position.x = 0.0;
+    target_pose_r.position.x = 0.03;
     target_pose_r.position.y = 0.0;
-    target_pose_r.position.z = 0.05;
-    target_pose_r.orientation.x = 1.0;
+    target_pose_r.position.z = -0.13;
+    target_pose_r.orientation.x = -0.5;
+    target_pose_r.orientation.y = -0.5;
+    target_pose_r.orientation.z = 0.5;
+    target_pose_r.orientation.w = 0.5;
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
+    ROS_INFO("拍绿色面");
 
-    Gripper_mode mode = R_open;
-    gripper_control(mode);
-
-    target_pose_r.position.z = -0.178;
-   
-    if(R_xarm_move_to(target_pose_r) == false)
-       return false;
-
-    mode = R_closed;
-    gripper_control(mode);*/
-
-    target_pose_r.position.x = -0.04;
-    target_pose_r.position.y = -0.126;
-    target_pose_r.position.z = -0.175;
+    target_pose_r.position.x = 0.0;
+    target_pose_r.position.y = -0.15;
+    target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
     target_pose_r.orientation.z = -0.5;
     target_pose_r.orientation.w = 0.5;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-    pick_num = 1;//右手用于固定魔方，左手旋转
-    add_scene();
-    cout << "按任意建继续" << endl;
-    int tmp;
-    cin >> tmp;
 
-    R_xarm_move_to(5,1);
+    gripper_control((Gripper_mode)(L_open));//张开左夹爪
 
-    cout << "按任意建继续" << endl;
-    cin >> tmp;
-    /*cout << "按任意建继续" << endl;
-    cin >> tmp;
-    cout << "按任意建继续" << endl;
-    cin >> tmp;
-    cout << "按任意建继续" << endl;
-    cin >> tmp;
-    cout << "按任意建继续" << endl;
-    cin >> tmp;
-    cout << "按任意建继续" << endl;
-    cin >> tmp;*/
+    //add_cube();
 
-    //R_xarm_move_to(5,2);
+    geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0.003;
+    target_pose_l.position.y = 0.28;
+    target_pose_l.position.z = 0;
+    target_pose_l.orientation.x = 0.7071068;
+    target_pose_l.orientation.y = 0;
+    target_pose_l.orientation.z = 0;
+    target_pose_l.orientation.w = 0.7071068;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    target_pose_l.position.y = 0.25;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    sleep(2);
+    gripper_control((Gripper_mode)(R_open));//张开右夹爪
+    R_move_to_safe_state();
+    ROS_INFO("拍红色面");
+
+    L_xarm_move_to_nocube(5, 2);
+    ROS_INFO("拍桔黄色面");
+
+    target_pose_l.position.x = 0.03;
+    target_pose_l.position.y = 0;
+    target_pose_l.position.z = -0.13;
+    target_pose_l.orientation.x = 0.5;
+    target_pose_l.orientation.y = -0.5;
+    target_pose_l.orientation.z = -0.5;
+    target_pose_l.orientation.w = 0.5;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    ROS_INFO("拍蓝色面");
 
 return true;
 

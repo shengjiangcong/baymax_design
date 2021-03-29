@@ -25,15 +25,17 @@ int main(int argc, char **argv)
        ros::shutdown(); 
     }
 
-    if(Solver.call_kociemba() == false)//求解魔方
+    Solver.take_photos();
+
+    /*if(Solver.call_kociemba() == false)//求解魔方
     {
        ROS_ERROR("没有求解出魔方解步骤! 输入序列错误的原因");
        ros::shutdown(); 
     }
-    //std::deque<std::string> cube_deque = Solver.get_cube_deque();
+    std::deque<std::string> cube_deque = Solver.get_cube_deque();*/
     std::deque<std::string> cube_deque;
 
-    cube_deque.push_back("L");
+    //cube_deque.push_back("L");
     /*cube_deque.push_back("U2");
     cube_deque.push_back("D");
     cube_deque.push_back("L'");
@@ -42,8 +44,8 @@ int main(int argc, char **argv)
     cube_deque.push_back("R");
     cube_deque.push_back("B");*/
     //cube_deque.push_back("R'");
-    cube_deque.push_back("F");
-    cube_deque.push_back("L");
+    //cube_deque.push_back("F");
+    //cube_deque.push_back("L");
     //cube_deque.push_back("R2");
     //cube_deque.push_back("L");
     //cube_deque.push_back("B2");

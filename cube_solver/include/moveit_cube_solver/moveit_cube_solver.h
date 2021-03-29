@@ -64,6 +64,7 @@ class CubeSolver
     moveit_msgs::CollisionObject cube;
     shape_msgs::SolidPrimitive cube_primitive;
     geometry_msgs::Pose cube_pose;
+    std::string input_cube_color;
   public:
         std::unordered_map<std::string, int> solve_map;
 	CubeSolver(ros::NodeHandle n_);
@@ -81,6 +82,8 @@ class CubeSolver
         bool L_xarm_move_to(int index, double kind);
         bool R_xarm_move_to(geometry_msgs::Pose pos);
         bool R_xarm_move_to(int index, double kind);
+        bool L_xarm_move_to_nocube(int index, double kind);
+        bool R_xarm_move_to_nocube(int index, double kind);
         std::deque<std::string> get_cube_deque() {return cube_deque;}
         int pick_num;//1表示右手固定魔方，2表示左手
         bool take_photos();

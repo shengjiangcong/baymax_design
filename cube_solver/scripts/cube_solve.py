@@ -29,7 +29,8 @@ class switch(object):
             return False
 
 def callback(req):
-    cube_string = rospy.get_param("/cube_string")
+    cube_string = req.color_list #自动识别魔方颜色
+    #cube_string = rospy.get_param("/cube_string") #手动输入魔方颜色
     solve_string = kociemba.solve(cube_string)
     excute_queue = deque()
     for i in solve_string.split():

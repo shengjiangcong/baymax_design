@@ -1,3 +1,4 @@
 bool flag
+string color_list
 ---
 string list
