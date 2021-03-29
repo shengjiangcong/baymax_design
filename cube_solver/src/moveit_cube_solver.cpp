@@ -515,13 +515,34 @@ bool CubeSolver::R_xarm_move_to_nocube(int index, double kind)
     //add_cube();
 }
 
+bool CubeSolver::call_object_detect()
+{
+    ros::ServiceClient client = nh_.serviceClient<object_color_detector::DetectObjectSrv>("/object_detect");
+    object_color_detector::DetectObjectSrv srv;
+    srv.request.objectType = 0;
+
+    if (client.call(srv))
+    {
+      input_cube_color += srv.response.detect_res;
+cout << input_cube_color << endl;
+      return true;
+    }
+    else
+    {
+      ROS_ERROR("fail to call object_color_detect service!");
+      return false;
+    }
+}
+
 bool CubeSolver::take_photos()
 {
     ROS_INFO("准备拍照。");
     R_xarm_move_to_nocube(5, -1);
     ROS_INFO("拍白色面");
+call_object_detect();
     R_xarm_move_to_nocube(5, 2);
     ROS_INFO("拍黄色面");
+call_object_detect();
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0.03;
@@ -535,6 +556,7 @@ bool CubeSolver::take_photos()
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
     ROS_INFO("拍绿色面");
+call_object_detect();
 
     target_pose_r.position.x = 0.0;
     target_pose_r.position.y = -0.15;
@@ -569,9 +591,11 @@ bool CubeSolver::take_photos()
     gripper_control((Gripper_mode)(R_open));//张开右夹爪
     R_move_to_safe_state();
     ROS_INFO("拍红色面");
+call_object_detect();
 
     L_xarm_move_to_nocube(5, 2);
     ROS_INFO("拍桔黄色面");
+call_object_detect();
 
     target_pose_l.position.x = 0.03;
     target_pose_l.position.y = 0;
@@ -584,6 +608,7 @@ bool CubeSolver::take_photos()
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     ROS_INFO("拍蓝色面");
+call_object_detect();
 
 return true;
 

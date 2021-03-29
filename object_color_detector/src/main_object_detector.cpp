@@ -7,6 +7,7 @@
 #include <image_transport/image_transport.h>
 #include <stdio.h>
 #include <vector>
+#include <unordered_map>
 
 #include "object_color_detector/object_detector.h"
 #include "object_color_detector/DetectObjectSrv.h"
@@ -187,19 +188,32 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
         cout << "point" << i << ": h" << h << " s" << s << " v" << v << endl; 
     }
 
+    unordered_map<int, char> hashtab;
+    hashtab[0] = 'F';
+    hashtab[1] = 'L';
+    hashtab[2] = 'R';
+    hashtab[3] = 'U';
+    hashtab[4] = 'D';
+    hashtab[5] = 'B';
+
+    string detect_res;
+
     for (int i = 0; i < a.size(); i++)
     {
-        for (int j = 0; j < 6; j++)
+        for (int j = 0; j < 6; j++)//红绿蓝白黄橘
         {
            if (in_hsv_range(image2hsv, a[i], hsv_object[j]))
            {
-                cout << "point" << i << ": ";
-                cout << j << endl;
+               // cout << "point" << i << ": ";
+                //cout << j << endl;
+                detect_res += hashtab[j];
                 break;
            }
         }
     }
 
+    res.detect_res = detect_res;
+    cout << detect_res << endl;
 
 
 

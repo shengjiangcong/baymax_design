@@ -34,6 +34,7 @@ limitations under the License.
 #include <unordered_map>
 #include <xarm_msgs/GripperMove.h>
 #include <xarm_msgs/GripperConfig.h>
+#include <object_color_detector/DetectObjectSrv.h>
 
 //
 //right:横向;-0.707,0,0,0.707
@@ -73,6 +74,7 @@ class CubeSolver
         void remove_cube();
         void add_cube();
         bool call_kociemba();
+        bool call_object_detect();
         void move_to_safe_state();
         void L_move_to_safe_state();
         void R_move_to_safe_state();

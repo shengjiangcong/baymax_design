@@ -15,7 +15,7 @@ int32 ALL_OBJECT    = 255
 int32 objectType
 
 ---
-
+string detect_res
 # response constants
 int32 SUCCESS        = 0
 int32 ERROR          = 1
