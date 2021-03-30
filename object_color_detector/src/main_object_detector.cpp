@@ -207,13 +207,32 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
                // cout << "point" << i << ": ";
                 //cout << j << endl;
                 detect_res += hashtab[j];
+                if (j == 0)
+                    cout << "红  ";
+                if (j == 1)
+                    cout << "绿  ";
+                if (j == 2)
+                    cout << "蓝  ";
+                if (j == 3)
+                    cout << "白  ";
+                if (j == 4)
+                    cout << "黄  ";
+                if (j == 5)
+                    cout << "橙  ";
                 break;
            }
+           if (j == 5)
+           {
+              detect_res += hashtab[3];
+              cout << "白  ";
+           }
         }
+        if (i == 2 || i == 5 || i == 8)
+           cout << endl;
     }
 
     res.detect_res = detect_res;
-    cout << detect_res << endl;
+    //cout << detect_res << endl;
 
 
 

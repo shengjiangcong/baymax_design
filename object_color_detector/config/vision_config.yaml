@@ -9,16 +9,16 @@ green:
   hmax: 85
   hmin: 50
   smax: 255
-  smin: 140
+  smin: 200
   vmax: 150
   vmin: 72
 white:
   hmax: 115
-  hmin: 95
-  smax: 230
-  smin: 190
-  vmax: 230
-  vmin: 190
+  hmin: 70
+  smax: 50
+  smin: 0
+  vmax: 150
+  vmin: 90
 yellow:
   hmax: 50
   hmin: 20
@@ -30,8 +30,8 @@ orange:
   hmax: 16
   hmin: 0
   smax: 255
-  smin: 131
-  vmax: 193
+  smin: 200
+  vmax: 195
   vmin: 144
 image:
   ROI_height: 480
@@ -45,9 +45,9 @@ image:
   - -0.000669988552959397
   - 0.25727560433640845
 red:
-  hmax: 180
+  hmax: 10
   hmin: 0
   smax: 255
-  smin: 180
+  smin: 210
   vmax: 107
   vmin: 50

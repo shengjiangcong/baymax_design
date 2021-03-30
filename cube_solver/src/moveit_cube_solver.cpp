@@ -524,7 +524,7 @@ bool CubeSolver::call_object_detect()
     if (client.call(srv))
     {
       input_cube_color += srv.response.detect_res;
-cout << input_cube_color << endl;
+      cout << input_cube_color << endl;
       return true;
     }
     else
@@ -539,10 +539,13 @@ bool CubeSolver::take_photos()
     ROS_INFO("准备拍照。");
     R_xarm_move_to_nocube(5, -1);
     ROS_INFO("拍白色面");
-call_object_detect();
+    sleep(5);
+    call_object_detect();
+
     R_xarm_move_to_nocube(5, 2);
     ROS_INFO("拍黄色面");
-call_object_detect();
+    sleep(5);
+    call_object_detect();
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0.03;
@@ -556,7 +559,8 @@ call_object_detect();
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
     ROS_INFO("拍绿色面");
-call_object_detect();
+    sleep(5);
+    call_object_detect();
 
     target_pose_r.position.x = 0.0;
     target_pose_r.position.y = -0.15;
@@ -587,15 +591,17 @@ call_object_detect();
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-    sleep(2);
+    sleep(5);
     gripper_control((Gripper_mode)(R_open));//张开右夹爪
     R_move_to_safe_state();
     ROS_INFO("拍红色面");
-call_object_detect();
+    sleep(5);
+    call_object_detect();
 
     L_xarm_move_to_nocube(5, 2);
     ROS_INFO("拍桔黄色面");
-call_object_detect();
+    sleep(2);
+    call_object_detect();
 
     target_pose_l.position.x = 0.03;
     target_pose_l.position.y = 0;
@@ -608,7 +614,22 @@ call_object_detect();
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     ROS_INFO("拍蓝色面");
-call_object_detect();
+    sleep(5);
+    call_object_detect();
+
+
+    string tmp = input_cube_color;
+    for (int k = 0; k < 9; k++)
+    {
+        input_cube_color[k + 9] = tmp[45 + k];
+        input_cube_color[k + 18] = tmp[27 + k];
+        input_cube_color[k + 27] = tmp[9 + k];
+        input_cube_color[k + 36] = tmp[18 + k];
+        input_cube_color[k + 45] = tmp[44 - k];       
+    }
+    cout << "识别得到颜色序列为" << input_cube_color << endl;
+
+
 
 return true;
 

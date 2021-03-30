@@ -27,12 +27,12 @@ int main(int argc, char **argv)
 
     Solver.take_photos();
 
-    /*if(Solver.call_kociemba() == false)//求解魔方
+    if(Solver.call_kociemba() == false)//求解魔方
     {
        ROS_ERROR("没有求解出魔方解步骤! 输入序列错误的原因");
        ros::shutdown(); 
     }
-    std::deque<std::string> cube_deque = Solver.get_cube_deque();*/
+    std::deque<std::string> cube_deque1 = Solver.get_cube_deque();
     std::deque<std::string> cube_deque;
 
     //cube_deque.push_back("L");
