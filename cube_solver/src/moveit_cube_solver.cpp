@@ -549,8 +549,8 @@ bool CubeSolver::take_photos()
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = 0.03;
-    target_pose_r.position.y = 0.0;
-    target_pose_r.position.z = -0.13;
+    target_pose_r.position.y = 0.017;
+    target_pose_r.position.z = -0.123;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
     target_pose_r.orientation.z = 0.5;
@@ -591,21 +591,31 @@ bool CubeSolver::take_photos()
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
-    sleep(5);
+    sleep(2);
     gripper_control((Gripper_mode)(R_open));//张开右夹爪
+    target_pose_r.position.y = -0.18;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
     R_move_to_safe_state();
+
+    target_pose_l.position.x = -0.157;
+    target_pose_l.position.y = 0.244;
+    target_pose_l.position.z = -0.14;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+
     ROS_INFO("拍红色面");
     sleep(5);
     call_object_detect();
 
-    L_xarm_move_to_nocube(5, 2);
+    L_xarm_move_to_nocube(5, -2);
     ROS_INFO("拍桔黄色面");
     sleep(2);
     call_object_detect();
 
-    target_pose_l.position.x = 0.03;
-    target_pose_l.position.y = 0;
-    target_pose_l.position.z = -0.13;
+    target_pose_l.position.x = 0.0288;
+    target_pose_l.position.y = 0.0366;
+    target_pose_l.position.z = -0.14;
     target_pose_l.orientation.x = 0.5;
     target_pose_l.orientation.y = -0.5;
     target_pose_l.orientation.z = -0.5;
@@ -624,9 +634,21 @@ bool CubeSolver::take_photos()
         input_cube_color[k + 9] = tmp[45 + k];
         input_cube_color[k + 18] = tmp[27 + k];
         input_cube_color[k + 27] = tmp[9 + k];
-        input_cube_color[k + 36] = tmp[18 + k];
+        //input_cube_color[k + 36] = tmp[18 + k];
         input_cube_color[k + 45] = tmp[44 - k];       
     }
+input_cube_color[36] = tmp[42-18];
+input_cube_color[37] = tmp[39-18];
+input_cube_color[38] = tmp[36-18];
+input_cube_color[39] = tmp[43-18];
+input_cube_color[40] = tmp[40-18];
+input_cube_color[41] = tmp[37-18];
+input_cube_color[42] = tmp[44-18];
+input_cube_color[43] = tmp[41-18];
+input_cube_color[44] = tmp[38-18];
+
+
+
     cout << "识别得到颜色序列为" << input_cube_color << endl;
 
 
@@ -652,7 +674,7 @@ bool CubeSolver::start_pick()
     Gripper_mode mode = R_open;
     gripper_control(mode);
 
-    target_pose_r.position.z = -0.178;
+    target_pose_r.position.z = -0.175;
    
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
@@ -660,9 +682,15 @@ bool CubeSolver::start_pick()
     mode = R_closed;
     gripper_control(mode);
 
-    target_pose_r.position.x = 0.0;
-    target_pose_r.position.y = -0.15;
+    target_pose_r.position.x = 0.08;
     target_pose_r.position.z = 0;
+
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+
+    target_pose_r.position.x = -0.07;
+    target_pose_r.position.y = -0.15;
+    target_pose_r.position.z = -0.14;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
     target_pose_r.orientation.z = -0.5;

@@ -26,6 +26,8 @@ int ROI_x, ROI_y, ROI_wdith, ROI_height;
 bool in_hsv_range(cv::Mat image2hsv, Point p, probot::vision::HSV hsv_para)
 {
         double h = image2hsv.at<Vec3b>(p)[0];//得到H的数值
+        if (h >= 175 && h <= 180)
+           h = 1;
         double s = image2hsv.at<Vec3b>(p)[1];//得到S的数值
         double v = image2hsv.at<Vec3b>(p)[2];//得到V的数值
 
@@ -170,18 +172,60 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
     }  */
     //cv::imshow("result", img_input);
     //cv::waitKey(100);
-    Point p1(291, 273);//左上角的格子
-    const int widdth = 71;
+    static int countt = 0;
+    int widdth = 0;
+    int length = 0;
+Point p1(224, 120);
+
+if (countt > 5)
+{
+   cin >> countt;
+}
+    if (countt == 0 || countt == 1)
+{
+    //Point p1(224, 120);//左上角的格子
+p1.x = 224;
+p1.y = 120;
+widdth = 60;
+length = 50;
+}
+else if (countt == 2)
+{
+    //Point p1(352, 72);//左上角的格子
+p1.x = 380;
+p1.y = 72;
+ widdth = 100;
+ length = 110;
+}
+else if (countt == 3 || countt == 4)
+{
+    //Point p1(352, 72);//左上角的格子
+p1.x = 190;
+p1.y = 115;
+ widdth = 100;
+ length = 95;
+}
+else if (countt == 5)
+{
+p1.x = 166;
+p1.y = 150;
+ widdth = 110;
+ length = 101;
+}
+
     vector<Point> a(9);
 
     for (int i = 0; i < a.size(); i++)
     {
         a[i].x = p1.x + (i % 3) * widdth;
-        a[i].y = p1.y + (i / 3) * widdth;
+        a[i].y = p1.y + (i / 3) * length;
 
         circle(img_input, a[i], 3,hsv_object[3].color,-1);
         
         double h = image2hsv.at<Vec3b>(a[i])[0];//得到H的数值
+        if (h >= 175 && h <= 180)
+ h = 1;
+        
         double s = image2hsv.at<Vec3b>(a[i])[1];//得到S的数值
         double v = image2hsv.at<Vec3b>(a[i])[2];//得到V的数值
 
@@ -239,7 +283,7 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
    
 
     image_pub_.publish(cv_ptr->toImageMsg());
-
+    countt ++;
     return true;
 }
 
