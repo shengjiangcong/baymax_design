@@ -184,8 +184,8 @@ if (countt > 5)
     if (countt == 0 || countt == 1)
 {
     //Point p1(224, 120);//左上角的格子
-p1.x = 224;
-p1.y = 120;
+p1.x = 230;
+p1.y = 100;
 widdth = 60;
 length = 50;
 }

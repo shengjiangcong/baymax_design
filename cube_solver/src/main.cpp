@@ -18,6 +18,7 @@ int main(int argc, char **argv)
 
     Solver.move_to_safe_state();//移动到安全位置
     //Solver.take_photos();
+    sleep(30);
 
     if(Solver.start_pick() == false)//固定位置抓取魔方，准备开始
     {
@@ -30,12 +31,14 @@ int main(int argc, char **argv)
     if(Solver.call_kociemba() == false)//求解魔方
     {
        ROS_ERROR("没有求解出魔方解步骤! 输入序列错误的原因");
-       ros::shutdown(); 
+       //ros::shutdown(); 
     }
-    std::deque<std::string> cube_deque1 = Solver.get_cube_deque();
-    std::deque<std::string> cube_deque;
+    std::deque<std::string> cube_deque = Solver.get_cube_deque();
+    //std::deque<std::string> cube_deque;
 
     //cube_deque.push_back("L");
+    //cube_deque.push_back("R2");
+    //cube_deque.push_back("R'");
     /*cube_deque.push_back("U2");
     cube_deque.push_back("D");
     cube_deque.push_back("L'");

@@ -3,14 +3,14 @@ blue:
   hmin: 90
   smax: 255
   smin: 224
-  vmax: 175
+  vmax: 195
   vmin: 120
 green:
   hmax: 85
   hmin: 50
   smax: 225
-  smin: 160
-  vmax: 180
+  smin: 135
+  vmax: 200
   vmin: 130
 white:
   hmax: 115
@@ -24,13 +24,13 @@ yellow:
   hmin: 20
   smax: 255
   smin: 147
-  vmax: 220
+  vmax: 255
   vmin: 170
 orange:
   hmax: 16
   hmin: 0
   smax: 255
-  smin: 200
+  smin: 180
   vmax: 255
   vmin: 190
 image:
@@ -48,6 +48,6 @@ red:
   hmax: 10
   hmin: 0
   smax: 255
-  smin: 190
-  vmax: 150
+  smin: 175
+  vmax: 190
   vmin: 100

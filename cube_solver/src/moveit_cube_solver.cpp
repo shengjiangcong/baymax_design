@@ -509,6 +509,12 @@ bool CubeSolver::R_xarm_move_to_nocube(int index, double kind)
 {
     //remove_cube();
     std::vector<double> joint_group_positions = R_xarm.getCurrentJointValues();
+
+    if (kind == -1 && joint_group_positions[5] < -1)
+        kind = 3;
+    if (kind == 2 && joint_group_positions[5] > 0)
+        kind = -2;
+
     joint_group_positions[index] += kind * PI / 2.0;
     R_xarm.setJointValueTarget(joint_group_positions);
     R_xarm.move();
@@ -539,12 +545,12 @@ bool CubeSolver::take_photos()
     ROS_INFO("准备拍照。");
     R_xarm_move_to_nocube(5, -1);
     ROS_INFO("拍白色面");
-    sleep(5);
+    sleep(2);
     call_object_detect();
 
     R_xarm_move_to_nocube(5, 2);
     ROS_INFO("拍黄色面");
-    sleep(5);
+    sleep(2);
     call_object_detect();
 
     geometry_msgs::Pose target_pose_r;
@@ -559,7 +565,7 @@ bool CubeSolver::take_photos()
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
     ROS_INFO("拍绿色面");
-    sleep(5);
+    sleep(2);
     call_object_detect();
 
     target_pose_r.position.x = 0.0;
@@ -579,7 +585,7 @@ bool CubeSolver::take_photos()
     geometry_msgs::Pose target_pose_l;
     target_pose_l.position.x = 0.003;
     target_pose_l.position.y = 0.28;
-    target_pose_l.position.z = 0;
+    target_pose_l.position.z = -0.002;
     target_pose_l.orientation.x = 0.7071068;
     target_pose_l.orientation.y = 0;
     target_pose_l.orientation.z = 0;
@@ -605,7 +611,7 @@ bool CubeSolver::take_photos()
        return false;
 
     ROS_INFO("拍红色面");
-    sleep(5);
+    sleep(2);
     call_object_detect();
 
     L_xarm_move_to_nocube(5, -2);
@@ -624,7 +630,7 @@ bool CubeSolver::take_photos()
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     ROS_INFO("拍蓝色面");
-    sleep(5);
+    sleep(2);
     call_object_detect();
 
 
@@ -650,6 +656,30 @@ input_cube_color[44] = tmp[38-18];
 
 
     cout << "识别得到颜色序列为" << input_cube_color << endl;
+
+
+    //gripper_control((Gripper_mode)(L_open));//张开左夹爪
+
+    //add_cube();
+
+    //geometry_msgs::Pose target_pose_l;
+    target_pose_l.position.x = 0.003;
+    target_pose_l.position.y = 0.25;
+    target_pose_l.position.z = 0;
+    target_pose_l.orientation.x = 0.7071068;
+    target_pose_l.orientation.y = 0;
+    target_pose_l.orientation.z = 0;
+    target_pose_l.orientation.w = 0.7071068;
+
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;
+    /*target_pose_l.position.y = 0.25;
+    if(L_xarm_move_to(target_pose_l) == false)
+       return false;*/
+    //gripper_control((Gripper_mode)(L_closed));//闭合左夹爪
+    sleep(2);
+    pick_num = 2;
+    L_xarm_move_to(5, 1);
 
 
 
@@ -678,11 +708,11 @@ bool CubeSolver::start_pick()
    
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
-
+    sleep(2);
     mode = R_closed;
     gripper_control(mode);
 
-    target_pose_r.position.x = 0.08;
+    target_pose_r.position.x = 0.15;
     target_pose_r.position.z = 0;
 
     if(R_xarm_move_to(target_pose_r) == false)
@@ -799,7 +829,7 @@ if (pick_num == 1)
 
     add_cube();
 
-    target_pose_l.position.z = 0.3;
+    target_pose_l.position.z = 0.33;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     return true;
@@ -841,7 +871,7 @@ if (pick_num == 1)
     gripper_control((Gripper_mode)(L_open));//张开左夹爪
     add_cube();
 
-    target_pose_l.position.z = 0.3;
+    target_pose_l.position.z = 0.33;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
 return true;
@@ -882,7 +912,7 @@ if (pick_num == 1)
     gripper_control((Gripper_mode)(L_open));//张开左夹爪
     add_cube();
 
-    target_pose_l.position.z = 0.3;
+    target_pose_l.position.z = 0.33;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     return true;
@@ -1438,8 +1468,8 @@ if (pick_num == 2)
     gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
-    target_pose_r.position.x = -0.005;
-    target_pose_r.position.y = -0.185;
+    target_pose_r.position.x = -0.002;
+    target_pose_r.position.y = -0.183;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1480,8 +1510,8 @@ if (pick_num == 2)
     gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
-    target_pose_r.position.x = -0.005;
-    target_pose_r.position.y = -0.185;
+    target_pose_r.position.x = -0.002;
+    target_pose_r.position.y = -0.183;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1522,8 +1552,8 @@ if (pick_num == 2)
     gripper_control((Gripper_mode)(R_open));//张开左夹爪
 
     geometry_msgs::Pose target_pose_r;
-    target_pose_r.position.x = -0.005;
-    target_pose_r.position.y = -0.185;
+    target_pose_r.position.x = -0.002;
+    target_pose_r.position.y = -0.183;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
     target_pose_r.orientation.y = -0.5;
@@ -1711,7 +1741,7 @@ else if (pick_num == 2)
     L_xarm_move_to(5, -1);
 
     geometry_msgs::Pose target_pose_r;
-    target_pose_r.position.x = 0.0;
+    target_pose_r.position.x = -0.002;
     target_pose_r.position.y = -0.2;
     target_pose_r.position.z = 0;
     target_pose_r.orientation.x = -0.5;
