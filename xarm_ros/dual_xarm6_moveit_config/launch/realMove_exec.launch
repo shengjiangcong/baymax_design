@@ -18,7 +18,7 @@
     <arg name="use_moveit" value="false" />
   </include>
 
-  <include file="$(find object_color_detector)/launch/object_detect_hsv.launch">
+  <include file="$(find cube_color_detector)/launch/cube_detect_hsv.launch">
   </include>
 
   <!-- run xarm_combined_traj_controller from HW interface, enable direct command to real robot arm -->  

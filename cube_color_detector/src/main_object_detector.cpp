@@ -9,7 +9,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "object_color_detector/DetectObjectSrv.h"
+#include "cube_color_detector/DetectObjectSrv.h"
 
 using namespace std;
 using namespace cv;
@@ -51,8 +51,8 @@ bool in_hsv_range(cv::Mat image2hsv, Point p, HSV hsv_para)
 }
 
 // service回调函数，输入参数req，输出参数res
-bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
-                    object_color_detector::DetectObjectSrv::Response &res)
+bool detectCallback(cube_color_detector::DetectObjectSrv::Request  &req,
+                    cube_color_detector::DetectObjectSrv::Response &res)
 {
     sensor_msgs::ImageConstPtr msg;
     try
@@ -62,7 +62,7 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
     catch (ros::Exception& e)
     {
         ROS_ERROR("Timeout waiting for image data: %s", e.what());
-        res.result = object_color_detector::DetectObjectSrvResponse::TIMEOUT;
+        res.result = cube_color_detector::DetectObjectSrvResponse::TIMEOUT;
         return false;
     }
 
@@ -167,7 +167,83 @@ p1.y = 150;
 
     string detect_res;
 
+    unordered_map<int, int> hashtab1;
+
+    hashtab1[0] = 0;
+    hashtab1[1] = 0;
+    hashtab1[2] = 0;
+    hashtab1[3] = 0;
+    hashtab1[4] = 0;
+    hashtab1[5] = 0;
+
     for (int i = 0; i < a.size(); i++)
+    {
+        for (int j = -1; j < 2; j++)
+        {
+            for (int k = -1; k < 2; k++)
+            {
+                for (int cou = 0; cou <6; cou++)
+                {
+                   Point tmp;
+                   tmp.x = a[i].x + j;
+                   tmp.y = a[i].y + k;
+                   if (in_hsv_range(image2hsv, tmp, hsv_object[cou]))
+                   {
+                      hashtab1[cou]++;
+                      break;
+                   }
+                      
+
+                }
+            }
+        }
+ 
+        if (hashtab1[0] > 3)
+        {
+            detect_res += hashtab[0];
+            cout << "红  ";
+        }   
+        else if (hashtab1[1] > 3)
+        {
+            detect_res += hashtab[1];
+            cout << "绿  ";
+        }    
+        else if (hashtab1[2] > 3)
+        {
+            detect_res += hashtab[2];
+            cout << "蓝  ";
+        }  
+        else if (hashtab1[3] > 3)
+        {
+            detect_res += hashtab[3];
+            cout << "白  ";
+        } 
+        else if (hashtab1[4] > 3)
+        {
+            detect_res += hashtab[4];
+            cout << "黄  ";
+        } 
+        else if (hashtab1[5] > 3)
+        {
+            detect_res += hashtab[5];
+            cout << "橙  ";
+        } 
+        else
+        {
+            detect_res += hashtab[3];
+            cout << "白  ";
+        }
+        if (i == 2 || i == 5 || i == 8)
+           cout << endl;
+    hashtab1[0] = 0;
+    hashtab1[1] = 0;
+    hashtab1[2] = 0;
+    hashtab1[3] = 0;
+    hashtab1[4] = 0;
+    hashtab1[5] = 0;
+    }
+
+    /*for (int i = 0; i < a.size(); i++)
     {
         for (int j = 0; j < 6; j++)//红绿蓝白黄橘
         {
@@ -198,11 +274,11 @@ p1.y = 150;
         }
         if (i == 2 || i == 5 || i == 8)
            cout << endl;
-    }
+    }*/
 
     //服务返回：detect_res是颜色对应的九位字母序列，result是成功标志。
     res.detect_res = detect_res;
-    res.result = object_color_detector::DetectObjectSrvResponse::SUCCESS;
+    res.result = cube_color_detector::DetectObjectSrvResponse::SUCCESS;
 
     image_pub_.publish(cv_ptr->toImageMsg());
     countt ++;
@@ -289,9 +365,9 @@ int main(int argc, char **argv)
     hsv_object[5].color = cv::Scalar(0, 69, 255);
 
     //image_transport::Subscriber image_sub = it_.subscribe("/usb_cam/image_raw", 1, &imageCb);
-    ros::ServiceServer service = nh.advertiseService("/object_detect", detectCallback);
+    ros::ServiceServer service = nh.advertiseService("/cube_detect", detectCallback);
 
-    image_pub_ = it_.advertise("/object_detection_result", 1);
+    image_pub_ = it_.advertise("/cube_detection_result", 1);
 
     ros::Rate loop_rate(10);
     while(ros::ok())

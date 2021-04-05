@@ -9,7 +9,7 @@
     <!-- whether to use fake_execution controller to drive the motion -->
     <arg name="fake_execution" value="true" />
   </include>
-  <include file="$(find object_color_detector)/launch/object_detect_hsv.launch">
+  <include file="$(find cube_color_detector)/launch/cube_detect_hsv.launch">
   </include>
 
 </launch>

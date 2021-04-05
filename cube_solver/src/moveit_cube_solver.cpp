@@ -523,8 +523,8 @@ bool CubeSolver::R_xarm_move_to_nocube(int index, double kind)
 
 bool CubeSolver::call_object_detect()
 {
-    ros::ServiceClient client = nh_.serviceClient<object_color_detector::DetectObjectSrv>("/object_detect");
-    object_color_detector::DetectObjectSrv srv;
+    ros::ServiceClient client = nh_.serviceClient<cube_color_detector::DetectObjectSrv>("/cube_detect");
+    cube_color_detector::DetectObjectSrv srv;
     srv.request.flag = 0;
 
     if (client.call(srv))
@@ -535,7 +535,7 @@ bool CubeSolver::call_object_detect()
     }
     else
     {
-      ROS_ERROR("fail to call object_color_detect service!");
+      ROS_ERROR("fail to call cube_color_detect service!");
       return false;
     }
 }

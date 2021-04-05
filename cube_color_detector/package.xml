@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>object_color_detector</name>
+  <name>cube_color_detector</name>
   <version>0.0.0</version>
   <description>The object_color_detector package</description>
 

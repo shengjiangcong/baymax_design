@@ -34,7 +34,7 @@ limitations under the License.
 #include <unordered_map>
 #include <xarm_msgs/GripperMove.h>
 #include <xarm_msgs/GripperConfig.h>
-#include <object_color_detector/DetectObjectSrv.h>
+#include <cube_color_detector/DetectObjectSrv.h>
 
 //
 //right:横向;-0.707,0,0,0.707
