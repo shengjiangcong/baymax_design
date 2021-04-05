@@ -9,21 +9,34 @@
 #include <vector>
 #include <unordered_map>
 
-#include "object_color_detector/object_detector.h"
 #include "object_color_detector/DetectObjectSrv.h"
 
 using namespace std;
 using namespace cv;
 
 image_transport::Publisher image_pub_;
-probot::vision::ObjectDetector objectDetector_;
+
+struct HSV
+{
+    //色相、饱和度、亮度
+    int hmin = 35;
+    int hmax = 60;
+
+    int smin = 90;
+    int smax = 255;
+
+    int vmin = 60;
+    int vmax = 255;
+
+    cv::Scalar color = cv::Scalar(255, 255, 255);
+};
 
 //初始化h参数
-probot::vision::HSV hsv_object[6];
+HSV hsv_object[6];
 
 int ROI_x, ROI_y, ROI_wdith, ROI_height;
 
-bool in_hsv_range(cv::Mat image2hsv, Point p, probot::vision::HSV hsv_para)
+bool in_hsv_range(cv::Mat image2hsv, Point p, HSV hsv_para)
 {
         double h = image2hsv.at<Vec3b>(p)[0];//得到H的数值
         if (h >= 175 && h <= 180)
@@ -81,100 +94,12 @@ bool detectCallback(object_color_detector::DetectObjectSrv::Request  &req,
 
     int box2draw =0;
  
-    //红色
-   /* objectDetector_.detection(image2hsv, hsv_object[object_color_detector::DetectObjectSrvRequest::RED_OBJECT], &box);
-    //遍历box中所有的Rect，标记检测出来的目标
-    if(!box.empty())
-    {
-        for(; box2draw<box.size(); box2draw++)
-        {
-             rectangle(img_input, box.at(box2draw), hsv_object[object_color_detector::DetectObjectSrvRequest::RED_OBJECT].color);
-             geometry_msgs::Pose targetPose;
-             targetPose.position.x = box.at(box2draw).x + cvRound(box.at(box2draw).width/2)  + ROI_x;
-             targetPose.position.y = box.at(box2draw).y + cvRound(box.at(box2draw).height/2) + ROI_y;
-             res.redObjList.push_back(targetPose);
-        }
-    }
-
-    //绿色
-    objectDetector_.detection(image2hsv, hsv_object[object_color_detector::DetectObjectSrvRequest::GREEN_OBJECT], &box);
-    //遍历box中所有的Rect，标记检测出来的目标
-    if(!box.empty())
-    {
-        for(; box2draw<box.size(); box2draw++)
-        {
-             rectangle(img_input, box.at(box2draw), hsv_object[object_color_detector::DetectObjectSrvRequest::GREEN_OBJECT].color);
-             geometry_msgs::Pose targetPose;
-             targetPose.position.x = box.at(box2draw).x + cvRound(box.at(box2draw).width/2)  + ROI_x;
-             targetPose.position.y = box.at(box2draw).y + cvRound(box.at(box2draw).height/2) + ROI_y;
-             res.greenObjList.push_back(targetPose);
-        }
-    }   
-
-    //蓝色
-    objectDetector_.detection(image2hsv, hsv_object[object_color_detector::DetectObjectSrvRequest::BLUE_OBJECT], &box);
-    //遍历box中所有的Rect，标记检测出来的目标
-    if(!box.empty())
-    {
-        for(; box2draw<box.size(); box2draw++)
-        {
-             rectangle(img_input, box.at(box2draw), hsv_object[object_color_detector::DetectObjectSrvRequest::BLUE_OBJECT].color);
-             geometry_msgs::Pose targetPose;
-             targetPose.position.x = box.at(box2draw).x + cvRound(box.at(box2draw).width/2)  + ROI_x;
-             targetPose.position.y = box.at(box2draw).y + cvRound(box.at(box2draw).height/2) + ROI_y;
-             res.blueObjList.push_back(targetPose);
-        }
-    }   
-
-    //白色
-    objectDetector_.detection(image2hsv, hsv_object[object_color_detector::DetectObjectSrvRequest::WHITE_OBJECT], &box);
-    //遍历box中所有的Rect，标记检测出来的目标
-    if(!box.empty())
-    {
-        for(; box2draw<box.size(); box2draw++)
-        {
-             rectangle(img_input, box.at(box2draw), hsv_object[object_color_detector::DetectObjectSrvRequest::WHITE_OBJECT].color);
-             geometry_msgs::Pose targetPose;
-             targetPose.position.x = box.at(box2draw).x + cvRound(box.at(box2draw).width/2)  + ROI_x;
-             targetPose.position.y = box.at(box2draw).y + cvRound(box.at(box2draw).height/2) + ROI_y;
-             res.blueObjList.push_back(targetPose);
-        }
-    }   
-
-    //黄色
-    objectDetector_.detection(image2hsv, hsv_object[object_color_detector::DetectObjectSrvRequest::YELLOW_OBJECT], &box);
-    //遍历box中所有的Rect，标记检测出来的目标
-    if(!box.empty())
-    {
-        for(; box2draw<box.size(); box2draw++)
-        {
-             rectangle(img_input, box.at(box2draw), hsv_object[object_color_detector::DetectObjectSrvRequest::YELLOW_OBJECT].color);
-             geometry_msgs::Pose targetPose;
-             targetPose.position.x = box.at(box2draw).x + cvRound(box.at(box2draw).width/2)  + ROI_x;
-             targetPose.position.y = box.at(box2draw).y + cvRound(box.at(box2draw).height/2) + ROI_y;
-             res.blueObjList.push_back(targetPose);
-        }
-    }   
-
-    //桔黄色
-    objectDetector_.detection(image2hsv, hsv_object[object_color_detector::DetectObjectSrvRequest::ORANGE_OBJECT], &box);
-    //遍历box中所有的Rect，标记检测出来的目标
-    if(!box.empty())
-    {
-        for(; box2draw<box.size(); box2draw++)
-        {
-             rectangle(img_input, box.at(box2draw), hsv_object[object_color_detector::DetectObjectSrvRequest::ORANGE_OBJECT].color);
-             geometry_msgs::Pose targetPose;
-             targetPose.position.x = box.at(box2draw).x + cvRound(box.at(box2draw).width/2)  + ROI_x;
-             targetPose.position.y = box.at(box2draw).y + cvRound(box.at(box2draw).height/2) + ROI_y;
-             res.blueObjList.push_back(targetPose);
-        }
-    }  */
-    //cv::imshow("result", img_input);
-    //cv::waitKey(100);
+    
     static int countt = 0;
     int widdth = 0;
     int length = 0;
+
+
 Point p1(224, 120);
 
 if (countt > 5)
@@ -275,12 +200,9 @@ p1.y = 150;
            cout << endl;
     }
 
+    //服务返回：detect_res是颜色对应的九位字母序列，result是成功标志。
     res.detect_res = detect_res;
-    //cout << detect_res << endl;
-
-
-
-   
+    res.result = object_color_detector::DetectObjectSrvResponse::SUCCESS;
 
     image_pub_.publish(cv_ptr->toImageMsg());
     countt ++;

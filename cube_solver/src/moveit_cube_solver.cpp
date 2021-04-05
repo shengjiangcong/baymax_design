@@ -525,7 +525,7 @@ bool CubeSolver::call_object_detect()
 {
     ros::ServiceClient client = nh_.serviceClient<object_color_detector::DetectObjectSrv>("/object_detect");
     object_color_detector::DetectObjectSrv srv;
-    srv.request.objectType = 0;
+    srv.request.flag = 0;
 
     if (client.call(srv))
     {

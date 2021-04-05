@@ -157,7 +157,7 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(object_detector src/object_detector.cpp src/main_object_detector.cpp)
+add_executable(object_detector src/main_object_detector.cpp)
 target_link_libraries(object_detector ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_dependencies(object_detector ${PROJECT_NAME}_gencpp)
 
