@@ -3,7 +3,8 @@
 
 int main(int argc, char **argv)
 {
-    setlocale(LC_CTYPE, "zh_CN.utf8");//中文输出
+    // 中文输出
+    setlocale(LC_CTYPE, "zh_CN.utf8");
 
     ros::init(argc, argv, "moveit_cube_solver");
 
@@ -11,72 +12,47 @@ int main(int argc, char **argv)
     spinner.start();
     ros::NodeHandle n;
 
-    CubeSolver Solver(n);//创建对象
+    // 创建对象
+    CubeSolver Solver(n);
 
-    //Solver.remove_scene();//删除环境
-    //Solver.remove_cube();//删除魔方
+    // 移动到安全位置
+    Solver.move_to_safe_state();
 
-    Solver.move_to_safe_state();//移动到安全位置
-    //Solver.take_photos();
-    //sleep(30);
-
-    if(Solver.start_pick() == false)//固定位置抓取魔方，准备开始
+    // 等待30s，用于放置魔方
+    for (int i = 6; i > 0; i--)
     {
-       ROS_ERROR("没有抓取起魔方，规划失败的原因");
+        std::cout << 5 * i << "秒后开始" << std::endl;
+        sleep(5);
+    }
+
+    // 固定位置抓取魔方，准备开始
+    if(Solver.start_pick() == false)
+    {
+       ROS_ERROR("没有抓取起魔方，规划失败");
        ros::shutdown(); 
     }
 
+    // 拍照识别魔方
     Solver.take_photos();
 
-    if(Solver.call_kociemba() == false)//求解魔方
+    // 召唤解魔方算法服务
+    if(Solver.call_kociemba() == false)
     {
-       ROS_ERROR("没有求解出魔方解步骤! 输入序列错误的原因");
-       //ros::shutdown(); 
+       ROS_ERROR("没有求解出魔方解步骤! 输入颜色序列错误");
+       ros::shutdown(); 
     }
-    //std::deque<std::string> cube_deque = Solver.get_cube_deque();
-    std::deque<std::string> cube_deque;
-    cube_deque.push_back("U");
-    //cube_deque.push_back("L");
-    //cube_deque.push_back("R2");
-    //cube_deque.push_back("R'");
-    /*cube_deque.push_back("U2");
-    cube_deque.push_back("D");
-    cube_deque.push_back("L'");
-    cube_deque.push_back("U");
-    cube_deque.push_back("L");
-    cube_deque.push_back("R");
-    cube_deque.push_back("B");*/
-    //cube_deque.push_back("R'");
-    //cube_deque.push_back("F");
-    //cube_deque.push_back("L");
-    //cube_deque.push_back("R2");
-    //cube_deque.push_back("L");
-    //cube_deque.push_back("B2");
-    //cube_deque.push_back("R2");
 
-
-
-    //cube_deque.push_back("L");
+    // 获取解
+    std::deque<std::string> cube_deque = Solver.get_cube_deque();
+    //std::deque<std::string> cube_deque;
     //cube_deque.push_back("U");
-    //cube_deque.push_back("L2");
-    //cube_deque.push_back("L");
-    //cube_deque.push_back("L'");
-    //cube_deque.push_back("L2");
-    //cube_deque.push_back("D");
-    //cube_deque.push_back("R");
-    //cube_deque.push_back("B");
-    //cube_deque.push_back("B'");
-    //cube_deque.push_back("F'");
-    /*cube_deque.push_back("R");
-    cube_deque.push_back("R'");
-    cube_deque.push_back("R2");
-cube_deque.push_back("U");*/
+   
+    // 循化执行，直到栈为空
     while (!cube_deque.empty())
     {
         std::string a = cube_deque.front();
-        //std::cout << a << std::endl;
         
-        switch(Solver.solve_map[a])
+        switch (Solver.solve_map[a])
         {
             case 0:
                  while (Solver.turn_U0() == false)
@@ -191,31 +167,7 @@ cube_deque.push_back("U");*/
         cube_deque.pop_front();
     }
 
-    /*if (Solver.pick_num == 1)
-        Solver.L_move_to_safe_state();
-    else if (Solver.pick_num == 2)
-        Solver.R_move_to_safe_state();*/
-    
-
-   /* geometry_msgs::Pose target_pose_l;
-    target_pose_l.position.x = 0;
-    target_pose_l.position.y = 0.15;
-    target_pose_l.position.z = 0;
-    target_pose_l.orientation.x = 0.707;
-    target_pose_l.orientation.y = 0;
-    target_pose_l.orientation.z = 0;
-    target_pose_l.orientation.w = 0.707;
-
-    geometry_msgs::Pose target_pose_r;
-    target_pose_r.position.x = -0.2593;
-    target_pose_r.position.y = -0.13;
-    target_pose_r.position.z = 0.4;
-    target_pose_r.orientation.x = -0.69664;
-    target_pose_r.orientation.y = -0.12282;
-    target_pose_r.orientation.z = 0.12272;
-    target_pose_r.orientation.w = 0.69609;
-
-    Solver.L_xarm_move_to(target_pose_l);*/
+    ROS_INFO("执行完成。");
 
     ros::shutdown(); 
     return 0;

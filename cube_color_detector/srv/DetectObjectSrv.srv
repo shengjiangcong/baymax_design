@@ -1,4 +1,4 @@
-# The detect object service commands robot to find objects pose
+# The detect cube service
 
 int32 flag
 

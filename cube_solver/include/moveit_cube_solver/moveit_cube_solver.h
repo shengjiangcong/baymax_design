@@ -36,18 +36,11 @@ limitations under the License.
 #include <xarm_msgs/GripperConfig.h>
 #include <cube_color_detector/DetectObjectSrv.h>
 
-//
-//right:横向;-0.707,0,0,0.707
-//      向下：1,0,0,0
-//      向前：0.707，0，0.707，0
-//      向上：0，0，0，1
-//
-
 class CubeSolver
 {
   private:
         ros::NodeHandle nh_;
-        //move group运动规划组
+        // move group运动规划组
 	moveit::planning_interface::MoveGroupInterface L_xarm;
 	moveit::planning_interface::MoveGroupInterface R_xarm;
 	moveit::planning_interface::MoveGroupInterface xarms;
@@ -55,11 +48,11 @@ class CubeSolver
         ros::Publisher planning_scene_diff_publisher;
         moveit_msgs::PlanningScene planning_scene;
 
-        //存储解魔方动作的序列栈
+        // 存储解魔方动作的序列栈
         std::deque<std::string> cube_deque;
         const double PI = 3.141592653;
 
-        //夹爪的四种状态定义
+        // 夹爪的四种状态定义
         enum Gripper_mode
         {
           L_closed,
@@ -72,41 +65,78 @@ class CubeSolver
         shape_msgs::SolidPrimitive cube_primitive;
         geometry_msgs::Pose cube_pose;
         
-        //输入到kociemba解魔方算法的颜色序列，54位string
+        // 输入到kociemba解魔方算法服务的颜色序列，54位string
         std::string input_cube_color;
   public:
+        // kociemba服务输出结果对应int数字
         std::unordered_map<std::string, int> solve_map;
+
 	CubeSolver(ros::NodeHandle n_);
 
-        //添加场景模型
+        // 添加场景模型
         void add_scene();
 
-        //删除场景模型
+        // 删除场景模型
         void remove_scene();
-
+   
+        // 添加魔方模型
         void add_cube();
+
+        // 删除魔方模型
         void remove_cube();
 
+        // 召唤kociemba解魔方服务
         bool call_kociemba();
+
+        // 召唤识别魔方服务
         bool call_object_detect();
+
+        // 手臂移动到安全位置
         void move_to_safe_state();
         void L_move_to_safe_state();
         void R_move_to_safe_state();
         void R_move_to_ready_state();
+
+        // 双臂逆运动学运动
         bool xarms_move_to(geometry_msgs::Pose pos1, geometry_msgs::Pose pos2);
+
+        // 左臂逆运动学运动
         bool L_xarm_move_to(geometry_msgs::Pose pos);
+
+        // 左臂正运东学运动
         bool L_xarm_move_to(const std::vector<double> joint_group_positions);
+
+        // 左臂单关节运动
         bool L_xarm_move_to(int index, double kind);
+
+        // 右臂逆运动学运动
         bool R_xarm_move_to(geometry_msgs::Pose pos);
+
+        // 右臂单关节运动
         bool R_xarm_move_to(int index, double kind);
+
+        // 右臂正运动学运动
         bool R_xarm_move_to(const std::vector<double> joint_group_positions);
+
+        // 无魔方单关节运动
         bool L_xarm_move_to_nocube(int index, double kind);
         bool R_xarm_move_to_nocube(int index, double kind);
+
+        // 返回解魔方序列
         std::deque<std::string> get_cube_deque() {return cube_deque;}
-        int pick_num;//1表示右手固定魔方，2表示左手固定魔方
+
+        // 魔方目前在哪个手臂上，1表示右手固定魔方，2表示左手固定魔方
+        int pick_num;
+
+        // 拍照识别魔方
         bool take_photos();
+
+        // 开始抓取魔方
         bool start_pick();
+
+        // 夹爪控制
         void gripper_control(Gripper_mode mode);
+
         bool turn_U0();//顺时针90
         bool turn_U1();//逆时针90
         bool turn_U2();//180
@@ -134,7 +164,8 @@ class CubeSolver
         bool turn_B1();//逆时针90
         bool turn_B2();//180
 
-        bool switch_fix_arm();//切换固定魔方的手臂
+        // 切换固定魔方的手臂
+        bool switch_fix_arm();
 
         
 	

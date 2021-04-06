@@ -38,16 +38,16 @@ int ROI_x, ROI_y, ROI_wdith, ROI_height;
 
 bool in_hsv_range(cv::Mat image2hsv, Point p, HSV hsv_para)
 {
-        double h = image2hsv.at<Vec3b>(p)[0];//得到H的数值
-        if (h >= 175 && h <= 180)
-           h = 1;
-        double s = image2hsv.at<Vec3b>(p)[1];//得到S的数值
-        double v = image2hsv.at<Vec3b>(p)[2];//得到V的数值
+     double h = image2hsv.at<Vec3b>(p)[0];//得到H的数值
+     if (h >= 175 && h <= 180)
+        h = 1;
+     double s = image2hsv.at<Vec3b>(p)[1];//得到S的数值
+     double v = image2hsv.at<Vec3b>(p)[2];//得到V的数值
 
-        if (h >= hsv_para.hmin && h <= hsv_para.hmax && s >= hsv_para.smin && s <= hsv_para.smax && v >= hsv_para.vmin && v <= hsv_para.vmax)
-            return true;
-        else
-            return false;
+     if (h >= hsv_para.hmin && h <= hsv_para.hmax && s >= hsv_para.smin && s <= hsv_para.smax && v >= hsv_para.vmin && v <= hsv_para.vmax)
+         return true;
+     else
+         return false;
 }
 
 // service回调函数，输入参数req，输出参数res
@@ -91,52 +91,40 @@ bool detectCallback(cube_color_detector::DetectObjectSrv::Request  &req,
     img_input.convertTo(bgr, CV_32FC3, 1.0 / 255, 0);
     cv::cvtColor(img_input, image2hsv,  cv::COLOR_BGR2HSV);
 
-
-    int box2draw =0;
- 
     
     static int countt = 0;
     int widdth = 0;
     int length = 0;
+    Point p1(224, 120);
 
-
-Point p1(224, 120);
-
-if (countt > 5)
-{
-   cin >> countt;
-}
     if (countt == 0 || countt == 1)
-{
-    //Point p1(224, 120);//左上角的格子
-p1.x = 230;
-p1.y = 100;
-widdth = 60;
-length = 50;
-}
-else if (countt == 2)
-{
-    //Point p1(352, 72);//左上角的格子
-p1.x = 380;
-p1.y = 72;
- widdth = 100;
- length = 110;
-}
-else if (countt == 3 || countt == 4)
-{
-    //Point p1(352, 72);//左上角的格子
-p1.x = 190;
-p1.y = 115;
- widdth = 100;
- length = 95;
-}
-else if (countt == 5)
-{
-p1.x = 166;
-p1.y = 150;
- widdth = 110;
- length = 101;
-}
+    {
+        p1.x = 230;
+        p1.y = 100;
+        widdth = 60;
+        length = 50;
+    }
+    else if (countt == 2)
+    {
+        p1.x = 380;
+        p1.y = 72;
+         widdth = 100;
+         length = 110;
+    }
+    else if (countt == 3 || countt == 4)
+    {
+        p1.x = 190;
+        p1.y = 115;
+        widdth = 100;
+        length = 95;
+    }
+    else if (countt == 5)
+    {
+        p1.x = 166;
+        p1.y = 150;
+        widdth = 110;
+        length = 101;
+    }
 
     vector<Point> a(9);
 
@@ -149,12 +137,11 @@ p1.y = 150;
         
         double h = image2hsv.at<Vec3b>(a[i])[0];//得到H的数值
         if (h >= 175 && h <= 180)
- h = 1;
-        
+            h = 1;       
         double s = image2hsv.at<Vec3b>(a[i])[1];//得到S的数值
         double v = image2hsv.at<Vec3b>(a[i])[2];//得到V的数值
 
-        cout << "point" << i << ": h" << h << " s" << s << " v" << v << endl; 
+        cout << "Point" << i + 1 << ": h" << h << " s" << s << " v" << v << endl; 
     }
 
     unordered_map<int, char> hashtab;
@@ -285,13 +272,14 @@ p1.y = 150;
     return true;
 }
 
-
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "object_detector");
     ros::NodeHandle nh;
     image_transport::ImageTransport it_(nh);
-    ////h
+
+    //加载yaml参数
+    //h
     nh.param("red/hmin", hsv_object[0].hmin, 0);
     nh.param("red/hmax", hsv_object[0].hmax, 40);
 
@@ -348,10 +336,6 @@ int main(int argc, char **argv)
     nh.param("orange/vmin", hsv_object[5].vmin, 160);
     nh.param("orange/vmax", hsv_object[5].vmax, 230);
 
-
-
-
-
     nh.param("image/ROI_x", ROI_x, 200);
     nh.param("image/ROI_y", ROI_y, 100);
     nh.param("image/ROI_wdith", ROI_wdith, 600);
@@ -364,7 +348,6 @@ int main(int argc, char **argv)
     hsv_object[4].color = cv::Scalar(0, 255, 255);
     hsv_object[5].color = cv::Scalar(0, 69, 255);
 
-    //image_transport::Subscriber image_sub = it_.subscribe("/usb_cam/image_raw", 1, &imageCb);
     ros::ServiceServer service = nh.advertiseService("/cube_detect", detectCallback);
 
     image_pub_ = it_.advertise("/cube_detection_result", 1);
