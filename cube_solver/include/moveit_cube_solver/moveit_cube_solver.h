@@ -47,14 +47,19 @@ class CubeSolver
 {
   private:
         ros::NodeHandle nh_;
+        //move group运动规划组
 	moveit::planning_interface::MoveGroupInterface L_xarm;
 	moveit::planning_interface::MoveGroupInterface R_xarm;
 	moveit::planning_interface::MoveGroupInterface xarms;
 
         ros::Publisher planning_scene_diff_publisher;
         moveit_msgs::PlanningScene planning_scene;
-        std::deque<std::string> cube_deque;//存储解的序列
+
+        //存储解魔方动作的序列栈
+        std::deque<std::string> cube_deque;
         const double PI = 3.141592653;
+
+        //夹爪的四种状态定义
         enum Gripper_mode
         {
           L_closed,
@@ -62,17 +67,26 @@ class CubeSolver
           R_closed,
           R_open
         };
-    moveit_msgs::CollisionObject cube;
-    shape_msgs::SolidPrimitive cube_primitive;
-    geometry_msgs::Pose cube_pose;
-    std::string input_cube_color;
+
+        moveit_msgs::CollisionObject cube;
+        shape_msgs::SolidPrimitive cube_primitive;
+        geometry_msgs::Pose cube_pose;
+        
+        //输入到kociemba解魔方算法的颜色序列，54位string
+        std::string input_cube_color;
   public:
         std::unordered_map<std::string, int> solve_map;
 	CubeSolver(ros::NodeHandle n_);
+
+        //添加场景模型
         void add_scene();
+
+        //删除场景模型
         void remove_scene();
-        void remove_cube();
+
         void add_cube();
+        void remove_cube();
+
         bool call_kociemba();
         bool call_object_detect();
         void move_to_safe_state();
@@ -81,17 +95,18 @@ class CubeSolver
         void R_move_to_ready_state();
         bool xarms_move_to(geometry_msgs::Pose pos1, geometry_msgs::Pose pos2);
         bool L_xarm_move_to(geometry_msgs::Pose pos);
+        bool L_xarm_move_to(const std::vector<double> joint_group_positions);
         bool L_xarm_move_to(int index, double kind);
         bool R_xarm_move_to(geometry_msgs::Pose pos);
         bool R_xarm_move_to(int index, double kind);
+        bool R_xarm_move_to(const std::vector<double> joint_group_positions);
         bool L_xarm_move_to_nocube(int index, double kind);
         bool R_xarm_move_to_nocube(int index, double kind);
         std::deque<std::string> get_cube_deque() {return cube_deque;}
-        int pick_num;//1表示右手固定魔方，2表示左手
+        int pick_num;//1表示右手固定魔方，2表示左手固定魔方
         bool take_photos();
         bool start_pick();
         void gripper_control(Gripper_mode mode);
-        void gripper_control_test();
         bool turn_U0();//顺时针90
         bool turn_U1();//逆时针90
         bool turn_U2();//180

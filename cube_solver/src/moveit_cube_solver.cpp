@@ -495,30 +495,36 @@ bool CubeSolver::R_xarm_move_to(int index, double kind)
     add_cube();
 }
 
+bool CubeSolver::L_xarm_move_to(const std::vector<double> joint_group_positions)
+{
+    L_xarm.setJointValueTarget(joint_group_positions);
+    L_xarm.move();
+    sleep(1);
+    return true;
+}
+
+bool CubeSolver::R_xarm_move_to(const std::vector<double> joint_group_positions)
+{
+    R_xarm.setJointValueTarget(joint_group_positions);
+    R_xarm.move();
+    sleep(1);
+    return true;
+}
+
 bool CubeSolver::L_xarm_move_to_nocube(int index, double kind)
 {
-    //remove_cube();
     std::vector<double> joint_group_positions = L_xarm.getCurrentJointValues();
     joint_group_positions[index] += kind * PI / 2.0;
     L_xarm.setJointValueTarget(joint_group_positions);
     L_xarm.move();
-    //add_cube();
 }
 
 bool CubeSolver::R_xarm_move_to_nocube(int index, double kind)
 {
-    //remove_cube();
     std::vector<double> joint_group_positions = R_xarm.getCurrentJointValues();
-
-    if (kind == -1 && joint_group_positions[5] < -1)
-        kind = 3;
-    if (kind == 2 && joint_group_positions[5] > 0)
-        kind = -2;
-
     joint_group_positions[index] += kind * PI / 2.0;
     R_xarm.setJointValueTarget(joint_group_positions);
     R_xarm.move();
-    //add_cube();
 }
 
 bool CubeSolver::call_object_detect()
@@ -543,12 +549,12 @@ bool CubeSolver::call_object_detect()
 bool CubeSolver::take_photos()
 {
     ROS_INFO("准备拍照。");
-    R_xarm_move_to_nocube(5, -1);
+    R_xarm_move_to_nocube(5, 3);
     ROS_INFO("拍白色面");
     sleep(2);
     call_object_detect();
 
-    R_xarm_move_to_nocube(5, 2);
+    R_xarm_move_to_nocube(5, -2);
     ROS_INFO("拍黄色面");
     sleep(2);
     call_object_detect();
@@ -712,13 +718,22 @@ bool CubeSolver::start_pick()
     mode = R_closed;
     gripper_control(mode);
 
-    target_pose_r.position.x = 0.15;
+    //target_pose_r.position.x = 0.15;
     target_pose_r.position.z = 0;
 
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
 
-    target_pose_r.position.x = -0.07;
+
+    add_scene();
+
+    std::vector<double> joint_group_positions = {-0.2714337950131025, 0.14766238923357686, -0.6127747978295633, 0.5727643392081438, 0.16284736564713326, -2.396541487573677};
+
+    R_xarm_move_to(joint_group_positions);
+
+
+
+   /* target_pose_r.position.x = -0.07;
     target_pose_r.position.y = -0.15;
     target_pose_r.position.z = -0.14;
     target_pose_r.orientation.x = -0.5;
@@ -728,24 +743,10 @@ bool CubeSolver::start_pick()
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
     pick_num = 1;//右手用于固定魔方，左手旋转
-    add_scene();
+    add_scene();*/
 
 return true;
 
-}
-
-void CubeSolver::gripper_control_test()
-{
-
-    ros::ServiceClient l_client = nh_.serviceClient<xarm_msgs::GripperMove>("L_xarm6/gripper_move");
-    ros::ServiceClient r_client = nh_.serviceClient<xarm_msgs::GripperMove>("R_xarm6/gripper_move");
-
-    xarm_msgs::GripperMove l_srv;
-    xarm_msgs::GripperMove r_srv;
-    l_srv.request.pulse_pos = 850;
-    r_srv.request.pulse_pos = 300;
-    l_client.call(l_srv);
-    r_client.call(r_srv);
 }
 
 void CubeSolver::gripper_control(Gripper_mode mode)
@@ -756,8 +757,7 @@ void CubeSolver::gripper_control(Gripper_mode mode)
 
     xarm_msgs::GripperMove l_srv;
     xarm_msgs::GripperMove r_srv;
-    //l_srv.request.pulse_pos = 700;
-    //l_client.call(l_srv);
+
 if (mode == L_closed)
 {
     l_srv.request.pulse_pos = 560;
@@ -786,7 +786,7 @@ else
 {
     ROS_ERROR("夹爪模式错误");
 }
-//sleep(3);
+sleep(2);
 
 }
 
@@ -829,6 +829,7 @@ if (pick_num == 1)
 
     add_cube();
 
+    target_pose_l = L_xarm.getCurrentPose(L_xarm.getEndEffectorLink()).pose;
     target_pose_l.position.z = 0.33;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;

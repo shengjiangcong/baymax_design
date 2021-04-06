@@ -4,6 +4,6 @@
 
   <rosparam command="load" file="$(find cube_color_detector)/config/vision_config.yaml" />
 
-  <node name="object_detector" pkg="cube_color_detector" type="object_detector" output="screen" />
+  <node name="object_detector" pkg="cube_color_detector" type="cube_detector" output="screen" />
 
 </launch>

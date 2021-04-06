@@ -157,9 +157,9 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(object_detector src/main_object_detector.cpp)
-target_link_libraries(object_detector ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-add_dependencies(object_detector ${PROJECT_NAME}_gencpp)
+add_executable(cube_detector src/main_cube_detector.cpp)
+target_link_libraries(cube_detector ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+add_dependencies(cube_detector ${PROJECT_NAME}_gencpp)
 
 #############
 ## Install ##
