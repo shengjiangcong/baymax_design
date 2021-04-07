@@ -721,7 +721,7 @@ void CubeSolver::gripper_control(Gripper_mode mode)
     {
         ROS_ERROR("夹爪模式错误");
     }
-    sleep(2);
+    sleep(1);
 }
 
 bool CubeSolver::turn_U0()//-1.325110706084886
@@ -1440,7 +1440,7 @@ if (pick_num == 2)
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = -0.005;
-    target_pose_r.position.y = 0.059;
+    target_pose_r.position.y = 0.056;
     target_pose_r.position.z = 0.25;
     target_pose_r.orientation.x = 1.0;
 
@@ -1454,8 +1454,13 @@ if (pick_num == 2)
     R_xarm_move_to(5,1);
     gripper_control((Gripper_mode)(R_open));
 
+    remove_cube();
     target_pose_r = R_xarm.getCurrentPose(R_xarm.getEndEffectorLink()).pose;
     target_pose_r.position.z = 0.28;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    add_cube();
+    target_pose_r.position.y = -0.25;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
     return true;
@@ -1482,7 +1487,7 @@ if (pick_num == 2)
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = -0.005;
-    target_pose_r.position.y = 0.059;
+    target_pose_r.position.y = 0.056;
     target_pose_r.position.z = 0.25;
     target_pose_r.orientation.x = 1.0;
 
@@ -1496,8 +1501,13 @@ if (pick_num == 2)
     R_xarm_move_to(5, -1);
     gripper_control((Gripper_mode)(R_open));
 
+    remove_cube();
     target_pose_r = R_xarm.getCurrentPose(R_xarm.getEndEffectorLink()).pose;
     target_pose_r.position.z = 0.28;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    add_cube();
+    target_pose_r.position.y = -0.25;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
     return true;
@@ -1523,7 +1533,7 @@ if (pick_num == 2)
 
     geometry_msgs::Pose target_pose_r;
     target_pose_r.position.x = -0.005;
-    target_pose_r.position.y = 0.059;
+    target_pose_r.position.y = 0.056;
     target_pose_r.position.z = 0.25;
     target_pose_r.orientation.x = 1.0;
 
@@ -1537,8 +1547,13 @@ if (pick_num == 2)
     R_xarm_move_to(5, -2);
     gripper_control((Gripper_mode)(R_open));
 
+    remove_cube();
     target_pose_r = R_xarm.getCurrentPose(R_xarm.getEndEffectorLink()).pose;
     target_pose_r.position.z = 0.28;
+    if(R_xarm_move_to(target_pose_r) == false)
+       return false;
+    add_cube();
+    target_pose_r.position.y = -0.25;
     if(R_xarm_move_to(target_pose_r) == false)
        return false;
     return true;
@@ -1568,7 +1583,7 @@ if (pick_num == 1)
 
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
-    target_pose_l.position.y = 0.25;
+    target_pose_l.position.y = 0.248;
     if(L_xarm_move_to(target_pose_l) == false)
        return false;
     gripper_control((Gripper_mode)(L_closed));
