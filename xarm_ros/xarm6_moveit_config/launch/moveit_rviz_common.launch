@@ -6,7 +6,7 @@
   <!-- By default, we are not in debug mode -->
   <arg name="debug" default="false" />
   <!-- By default, hide joint_state_publisher's GUI -->
-  <arg name="use_gui" default="false" />
+  <arg name="use_gui" default="true" />
   <!-- as for moveit planner, always reload model to limit the joint range -->
   <arg name="reload_limited_description" default="true" />
 
