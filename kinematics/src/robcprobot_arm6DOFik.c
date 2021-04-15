@@ -604,7 +604,7 @@ int16_t robc_ARM6DOF_Anno_ikcalc(float Dest[6])
 			for (i = 0; i < 6; i++)
 			{
 				ARM6DOF_para.JointVal[i] = ARM6DOF_para.JointValDest[i];
-				printf("%f\n", ARM6DOF_para.JointValDest[i]);
+				//printf("%f\n", ARM6DOF_para.JointValDest[i]);
 			}
 			return 0;
 		}
@@ -623,7 +623,7 @@ int16_t robc_ARM6DOF_Anno_ikcalc(float Dest[6])
 			for (i = 0; i < 6; i++)
 			{
 				ARM6DOF_para.JointVal[i] = ARM6DOF_para.JointValDest[i];
-				printf("%f\n", ARM6DOF_para.JointValDest[i]);
+				//printf("%f\n", ARM6DOF_para.JointValDest[i]);
 			}
 			return 0;
 		}
@@ -689,9 +689,9 @@ int16_t robc_ARM6DOF_Anno_kicalc(float JointVal[6])
 	ARM6DOF_para.PosVal[0] = matrix_T6[0][3];
 	ARM6DOF_para.PosVal[1] = matrix_T6[1][3];
 	ARM6DOF_para.PosVal[2] = matrix_T6[2][3];
-	ARM6DOF_para.PosVal[3] = atan2(matrix_T6[1][0], matrix_T6[0][0]);
-	ARM6DOF_para.PosVal[4] = atan2(-matrix_T6[2][0], sqrt(pow(matrix_T6[2][1],2)+ pow(matrix_T6[2][2],2)));
-	ARM6DOF_para.PosVal[5] = atan2(matrix_T6[2][1], matrix_T6[2][2]);
+	ARM6DOF_para.PosVal[3] = atan2(matrix_T6[1][0], matrix_T6[0][0]);//z
+	ARM6DOF_para.PosVal[4] = atan2(-matrix_T6[2][0], sqrt(pow(matrix_T6[2][1],2)+ pow(matrix_T6[2][2],2)));//y
+	ARM6DOF_para.PosVal[5] = atan2(matrix_T6[2][1], matrix_T6[2][2]);//x
 	/*printf("%f\n", matrix_T1[0][3]);
 	printf("%f\n", matrix_T1[1][3]);
 	printf("%f\n", matrix_T1[2][3]);

@@ -22,7 +22,7 @@ BaymaxKinematics::BaymaxKinematics()
 
 vector<float> BaymaxKinematics::forward_kinematic(const vector<float>& joint)
 {
-    float dest[6] = { -0.65, 1.56, -1.56, 1.05, 0.34, 1.83};//0  -0.18623  -1.38456  0  -0.9057  0
+    float dest[6] = { 8.724164713131616e-05, 0.45515541760244504, -0.8317907629932741, 0, 0.3766234220441459, 0};//0  -0.18623  -1.38456  0  -0.9057  0
     float posval[6] = { 0 };
     vector<float> res(6);
 
@@ -47,6 +47,25 @@ vector<float> BaymaxKinematics::forward_kinematic(const vector<float>& joint)
     cout << "Pos: " << res[0] << "  " << res[1] << "  " << res[2] << endl;
     cout << "Rpy: " << res[3] << "  " << res[4] << "  " << res[5] << endl;
 
+    float tmp0 = res[0];
+    float tmp1 = res[1];
+    float tmp2 = res[2];
+    float sum = sqrt(res[0] * res[0] + res[2] * res[2]);
+    cout << sum << endl;
+    float theta = 3.141592653 / 2.0 - 0.349 + atan2(res[2], res[0]);
+    cout << theta << endl;
+    res[2] = res[1];
+    res[0] = -500 + sin(theta)*sum;
+    res[1] = -99.16 + cos(theta)*sum;
+
+    cout << "修正: " << res[0] << "  " << res[1] << "  " << res[2] << endl;
+
+
+    Eigen::Quaternion<double> q(0,0,0,1);
+    q = Eigen::AngleAxis<double>(res[5], ::Eigen::Vector3d::UnitZ()) * Eigen::AngleAxis<double>(res[4], ::Eigen::Vector3d::UnitY()) * Eigen::AngleAxis<double>(res[3], ::Eigen::Vector3d::UnitX());
+    //cout << "xyzw: " << q.x() << "  " << q.y() << "  " << q.z() << "  " << q.w() << endl;
+
+
     return res;
 }
 
@@ -67,6 +86,9 @@ vector<float> BaymaxKinematics::inverse_kinematic(const vector<float>& pos, cons
         posdest[i] = pos[i];
     }
 
+    //posdest[1] = posdest[2];
+    float sum = sqrt((500 + posdest[0]) * (500 + posdest[0]) + (99.16 + posdest[1]) * (99.16 + posdest[1]));
+    cout << sum << endl;
     robc_ARM6DOF_set_jointval(JointValu);
     robc_ARM6DOF_set_modle(0);
 
@@ -77,6 +99,20 @@ vector<float> BaymaxKinematics::inverse_kinematic(const vector<float>& pos, cons
     for (int i = 0; i < res.size(); i++)
     {
         res[i] = Jointdest[i];
+    }
+    res[1] += 0.18623;
+    res[1] = -res[1];
+    res[2] += 1.38456;
+    res[4] += 0.9057;
+    res[4] = -res[4];
+    res[2] = -res[2];
+
+    for (int i = 0; i < res.size(); i++)
+    {
+        while (res[i] < -1 * PI)
+               res[i] += 2 * PI;
+        while (res[i] > PI)
+               res[i] += -2 * PI;
     }
 
     cout << "Joint: " << res[0] << "  " << res[1] << "  " << res[2] << "  " << res[3] << "  " << res[4] << "  " << res[5] << endl;

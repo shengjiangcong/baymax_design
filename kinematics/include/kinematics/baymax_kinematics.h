@@ -2,6 +2,8 @@
 #define _BAYMAX_KINEMATICS_H_
 #include <iostream>
 #include <vector>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include "kinematics/robcprobot_arm6DOFik.h"
 #include "kinematics/robcprobot_matrix.h"
 

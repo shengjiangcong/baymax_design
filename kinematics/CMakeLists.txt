@@ -12,12 +12,13 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
 )
+find_package(Eigen3 REQUIRED)
 
 set(SRC_FILES 
   src/robcprobot_arm6DOFik.c
   src/robcprobot_matrix.c
 )
-
+include_directories("/usr/include/eigen3")
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 

@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     spinner.start();
     ros::NodeHandle n;
     BaymaxKinematics aaa;
-    vector<float> mm = {0.3, 0.6, 0, 0.5, 0, 0};
+    vector<float> mm = {0, 0, 0, 0, 0, 0};
     vector<float> res = aaa.forward_kinematic(mm);
     aaa.inverse_kinematic(res, mm);
 
