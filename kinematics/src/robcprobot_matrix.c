@@ -14,7 +14,7 @@
  * @ingroup
  */
 
-#include "robcprobot_matrix.h"
+#include "kinematics/robcprobot_matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
  /*#include <assert.h>

@@ -14,8 +14,8 @@
  * @ingroup
  */
 
-#include "robcprobot_arm6DOFik.h"
-#include "robcprobot_matrix.h"
+#include "kinematics/robcprobot_arm6DOFik.h"
+#include "kinematics/robcprobot_matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -712,12 +712,12 @@ int16_t robc_ARM6DOF_Anno_kicalc(float JointVal[6])
 	printf("%f\n", matrix_T5[1][3]);
 	printf("%f\n", matrix_T5[2][3]);*/
 
-	printf("%f\n", ARM6DOF_para.PosVal[0]);	
+	/*printf("%f\n", ARM6DOF_para.PosVal[0]);	
 	printf("%f\n", ARM6DOF_para.PosVal[1]);
 	printf("%f\n", ARM6DOF_para.PosVal[2]);
 	printf("%f\n", ARM6DOF_para.PosVal[3]);
 	printf("%f\n", ARM6DOF_para.PosVal[4]);
-	printf("%f\n", ARM6DOF_para.PosVal[5]);
+	printf("%f\n", ARM6DOF_para.PosVal[5]);*/
 
 
 
