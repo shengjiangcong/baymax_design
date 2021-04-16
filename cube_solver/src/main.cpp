@@ -13,8 +13,11 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     BaymaxKinematics aaa;
     vector<float> mm = {0, 0, 0, 0, 0, 0};
-    vector<float> res = aaa.forward_kinematic(mm);
-    aaa.inverse_kinematic(res, mm);
+    vector<float> res = aaa.L_xarm_forward_kinematic(mm);
+    aaa.L_xarm_inverse_kinematic(res, mm);
+    vector<float> nn = {-0.3199690244179359, 1.5827473502231757, -2.4085356781209604, -1.0436462959735082, 2.458701693923769, 2.225104471362355};
+    vector<float> res1 = aaa.R_xarm_forward_kinematic(nn);
+    aaa.R_xarm_inverse_kinematic(res1, nn);
 
 
 

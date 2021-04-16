@@ -15,8 +15,10 @@ class BaymaxKinematics
           const double PI = 3.141592653;
       public:
           BaymaxKinematics();
-          vector<float> forward_kinematic(const vector<float>& joint);
-          vector<float> inverse_kinematic(const vector<float>& pos, const vector<float>& seed);
+          vector<float> L_xarm_forward_kinematic(const vector<float>& joint);
+          vector<float> L_xarm_inverse_kinematic(const vector<float>& pos, const vector<float>& seed);
+          vector<float> R_xarm_forward_kinematic(const vector<float>& joint);
+          vector<float> R_xarm_inverse_kinematic(const vector<float>& pos, const vector<float>& seed);
           void pout() {cout << "ss" << endl;}
 };
 
